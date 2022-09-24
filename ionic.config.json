@@ -1,0 +1,7 @@
+{
+  "name": "flight-info",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react"
+}
