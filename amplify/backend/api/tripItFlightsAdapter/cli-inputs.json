@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "paths": {
+    "/tripit/flights/{objectId}": {
+      "name": "/tripit/flights/{objectId}",
+      "lambdaFunction": "flightinfodb4a0643",
+      "permissions": {
+        "setting": "open"
+      }
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-flightinfo-dev-115417-authRole",
+      "UnauthRoleArn": "arn:aws:iam::803061835180:role/amplify-flightinfo-dev-115417-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::803061835180:role/amplify-flightinfo-dev-115417-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-flightinfo-dev-115417-deployment",
+      "UnauthRoleName": "amplify-flightinfo-dev-115417-unauthRole",
+      "StackName": "amplify-flightinfo-dev-115417",
+      "StackId": "arn:aws:cloudformation:us-east-1:803061835180:stack/amplify-flightinfo-dev-115417/4c1ad4f0-3c3a-11ed-9937-0aa1ee6b55a3",
+      "AmplifyAppId": "d39o3gpxqsp5wq"
+    },
+    "categories": {
+      "function": {
+        "flightinfodb4a0643": {
+          "secretsPathAmplifyAppId": "d39o3gpxqsp5wq",
+          "deploymentBucketName": "amplify-flightinfo-dev-115417-deployment",
+          "s3Key": "amplify-builds/flightinfodb4a0643-7a43387539716c426f41-build.zip"
+        }
+      }
+    }
+  }
+}
