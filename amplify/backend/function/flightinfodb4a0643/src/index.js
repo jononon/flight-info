@@ -1,6 +1,6 @@
 import got from 'got';
 
-const aws = require('aws-sdk');
+import aws from 'aws-sdk';
 
 const { Parameters } = await (new aws.SSM())
   .getParameters({
