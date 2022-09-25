@@ -1,6 +1,7 @@
 import {
   IonAccordion,
   IonAccordionGroup,
+  IonBadge,
   IonContent,
   IonHeader,
   IonItem,
@@ -41,6 +42,7 @@ const Home: React.FC = () => {
           <IonAccordion value="first">
             <IonItem slot="header" color="light">
               <IonLabel>25 Sep | 11:25 LAX - JFK 18:40</IonLabel>
+              <IonBadge>On Time</IonBadge>
             </IonItem>
             <div className="ion-padding" slot="content">
               First Content

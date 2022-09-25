@@ -41,17 +41,19 @@ const handler = async (event) => {
           segments.push(segment)
       }
     }
-
+    console.log(segments);
+    
     segments.sort((a, b) => {
       const timeStringA = a["StartDateTime"]["date"] + "T" + a["StartDateTime"]["time"]+a["StartDateTime"]["utc_offset"];
       const timeStringB = b["StartDateTime"]["date"] + "T" + b["StartDateTime"]["time"]+b["StartDateTime"]["utc_offset"];
-
+      
       const timeA = new Date(timeStringA);
       const timeB = new Date(timeStringB);
-
+      
       return timeA - timeB;
     });
-
+    
+    console.log(segments);
     // switch(event.httpMethod) {
 
     // }
