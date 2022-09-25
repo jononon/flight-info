@@ -1,13 +1,12 @@
 import got from 'got';
+import { SSMClient, GetParametersCommand } from "@aws-sdk/client-ssm";
 
-const aws = require('aws-sdk');
-
-const { Parameters } = await (new aws.SSM())
-  .getParameters({
-    Names: ["tripit_username","tripit_password"].map(secretName => process.env[secretName]),
-    WithDecryption: true,
-  })
-  .promise();
+const client = new SSMClient();
+const command = new GetParametersCommand({
+  Names: ["tripit_username","tripit_password"].map(secretName => process.env[secretName]),
+  WithDecryption: true,
+});
+const {Parameters} = await client.send(command);
 
 // Parameters will be of the form { Name: 'secretName', Value: 'secretValue', ... }[]
 
