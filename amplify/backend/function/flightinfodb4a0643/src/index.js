@@ -15,7 +15,8 @@ const secrets = Parameters.reduce((acc, val) => {
   return {...acc, [Name]: Value}
 }, {})
 
-
+console.log(secrets);
+console.log(Parameters);
 const tripItClient = got.extend({
   prefixUrl: "https://api.tripit.com/v1/",
   username: secrets.tripit_username,
