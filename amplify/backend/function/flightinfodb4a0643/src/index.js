@@ -1,10 +1,6 @@
 import got from 'got';
 import { SSMClient, GetParametersCommand } from "@aws-sdk/client-ssm";
 
-// const ssmPrefix = `/amplify/${appId}/${env}/AMPLIFY_${functionName}_`
-const ssmPrefix = "/amplify/d39o3gpxqsp5wq/dev/AMPLIFY_flightinfodb4a0643_";
-console.log([`tripit_username`,`tripit_password`].map(secretName => process.env[secretName]));
-
 const client = new SSMClient();
 const command = new GetParametersCommand({
   Names: [`tripit_username`,`tripit_password`].map(secretName => process.env[secretName]),
@@ -19,13 +15,10 @@ const secrets = Parameters.reduce((acc, val) => {
   return {...acc, [Name]: Value}
 }, {})
 
-console.log(secrets);
-console.log(Parameters);
-
 const tripItClient = got.extend({
   prefixUrl: "https://api.tripit.com/v1/",
   username: secrets[process.env.tripit_username],
-  password: secrets[process.env.tripit_username]
+  password: secrets[process.env.tripit_password]
 })
 
 /**
