@@ -10,12 +10,23 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import ExploreContainer from "../components/ExploreContainer";
 import "./Home.css";
+import { API } from "aws-amplify";
 
 const Home: React.FC = () => {
   const accordionGroup = useRef<null | HTMLIonAccordionGroupElement>(null);
+
+  const [flights, setFlights] = useState([]);
+
+  useEffect(() => {
+    const getFlightsFunction = async () => {
+      setFlights(await API.get("tripItFlightsAdapter", "/tripit/flights/", {}));
+    };
+    console.log(flights);
+    getFlightsFunction();
+  });
 
   useEffect(() => {
     if (!accordionGroup.current) {

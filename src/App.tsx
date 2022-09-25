@@ -22,6 +22,11 @@ import "@ionic/react/css/display.css";
 /* Theme variables */
 import "./theme/variables.css";
 
+import { Amplify } from "aws-amplify";
+import aws_exports from "./aws-exports";
+
+Amplify.configure(aws_exports);
+
 setupIonicReact({
   mode: "ios",
 });
