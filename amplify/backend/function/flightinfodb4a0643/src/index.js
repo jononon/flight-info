@@ -31,7 +31,7 @@ const tripItClient = got.extend({
 /**
  * @type {import('@types/aws-lambda').APIGatewayProxyHandler}
  */
-const flightInfoHandler = async (event) => {
+const handler = async (event) => {
     console.log(`EVENT: ${JSON.stringify(event)}`);
 
     const data = await tripItClient.get('list/object/type/air?format=json')
@@ -72,4 +72,4 @@ const flightInfoHandler = async (event) => {
     };
 };
 
-export default flightInfoHandler;
+export {handler};
