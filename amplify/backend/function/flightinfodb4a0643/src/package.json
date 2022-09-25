@@ -9,6 +9,7 @@
     "@types/aws-lambda": "^8.10.92"
   },
   "dependencies": {
+    "@aws-sdk/client-ssm": "3.178.0",
     "got": "12.5.0"
   }
 }
