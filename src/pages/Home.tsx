@@ -22,7 +22,9 @@ const Home: React.FC = () => {
 
   useEffect(() => {
     const getFlightsFunction = async () => {
-      setFlights(await API.get("tripItFlightsAdapter", "/tripit/flights/", {}));
+      setFlights(
+        await API.get("tripItFlightsAdapter", "/tripit/flights/asdf", {})
+      );
     };
     console.log(flights);
     getFlightsFunction();
