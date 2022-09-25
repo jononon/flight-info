@@ -1,9 +1,12 @@
 import got from 'got';
 import { SSMClient, GetParametersCommand } from "@aws-sdk/client-ssm";
 
+// const ssmPrefix = `/amplify/${appId}/${env}/AMPLIFY_${functionName}_`
+const ssmPrefix = "/amplify/d39o3gpxqsp5wq/dev/AMPLIFY_flightinfodb4a0643_";
+
 const client = new SSMClient();
 const command = new GetParametersCommand({
-  Names: ["tripit_username","tripit_password"].map(secretName => process.env[secretName]),
+  Names: [`${ssmPrefix}tripit_username`,`${ssmPrefix}tripit_password`].map(secretName => process.env[secretName]),
   WithDecryption: true,
 });
 const {Parameters} = await client.send(command);
