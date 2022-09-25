@@ -27,10 +27,10 @@ const tripItClient = got.extend({
 const handler = async (event) => {
     console.log(`EVENT: ${JSON.stringify(event)}`);
 
-    const data = await tripItClient.get('list/object/type/air?format=json')
+    const data = await tripItClient.get('list/object/type/air?format=json').json();
 
     console.log(data);
-    
+
     const segments = [];
 
     for (const flight in data["AirObject"]) {
