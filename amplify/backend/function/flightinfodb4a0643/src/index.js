@@ -29,6 +29,8 @@ const handler = async (event) => {
 
     const data = await tripItClient.get('list/object/type/air?format=json')
 
+    console.log(data);
+    
     const segments = [];
 
     for (const flight in data["AirObject"]) {
