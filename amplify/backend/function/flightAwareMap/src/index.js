@@ -27,13 +27,20 @@ const flightAwareClient = got.extend({
 const handler = async (event) => {
     console.log(`EVENT: ${JSON.stringify(event)}`);
 
+    const fa_flight_id = event.pathParameters.fa_flight_id;
+    const height = event.queryParameters.height;
+    const width = event.queryParameters.width;
+
+    const map = flightAwareClient.get(`flights/${fa_flight_id}?height=${height}&width=${width}`).json()
+
+
     return {
       statusCode: 200,
       headers: {
           "Access-Control-Allow-Origin": "*",
           "Access-Control-Allow-Headers": "*"
       }, 
-      body: JSON.stringify('Hello from Lambda!'),
+      body: JSON.stringify(map),
     };
 };
 

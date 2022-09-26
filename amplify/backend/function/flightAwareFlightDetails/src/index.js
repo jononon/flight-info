@@ -15,7 +15,7 @@ const secrets = Parameters.reduce((acc, val) => {
 }, {})
 
 const flightAwareClient = got.extend({
-  prefixUrl: "https://aeroapi.flightaware.com/aeroapi",
+  prefixUrl: "https://aeroapi.flightaware.com/aeroapi/",
   headers: {
     "x-apikey": secrets[process.env.flightaware_api_key]
   }
@@ -27,13 +27,19 @@ const flightAwareClient = got.extend({
 const handler = async (event) => {
     console.log(`EVENT: ${JSON.stringify(event)}`);
 
+    const ident = event.pathParameters.ident;
+    const start = event.queryParameters.start;
+    const end = event.queryParameters.end;
+
+    const flights = flightAwareClient.get(`flights/${ident}?start=${start}&end=${end}`).json()
+
     return {
       statusCode: 200,
       headers: {
           "Access-Control-Allow-Origin": "*",
           "Access-Control-Allow-Headers": "*"
       }, 
-      body: JSON.stringify('Hello from Lambda!'),
+      body: JSON.stringify(flights[0]),
     };
 };
 
