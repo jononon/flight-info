@@ -21,11 +21,12 @@
         "flightAwareFlightDetails": {
           "secretsPathAmplifyAppId": "d39o3gpxqsp5wq",
           "deploymentBucketName": "amplify-flightinfo-dev-115417-deployment",
-          "s3Key": "amplify-builds/flightAwareFlightDetails-5a6879664c7a4d7a6652-build.zip"
+          "s3Key": "amplify-builds/flightAwareFlightDetails-62716350742b62503746-build.zip"
         },
         "flightAwareMap": {
           "deploymentBucketName": "amplify-flightinfo-dev-115417-deployment",
-          "s3Key": "amplify-builds/flightAwareMap-766477556a5970355437-build.zip"
+          "s3Key": "amplify-builds/flightAwareMap-7865735a737934523176-build.zip",
+          "secretsPathAmplifyAppId": "d39o3gpxqsp5wq"
         }
       }
     }
