@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "paths": {
+    "/flightaware/details/{ident}": {
+      "name": "/flightaware/details/{ident}",
+      "lambdaFunction": "flightAwareFlightDetails",
+      "permissions": {
+        "setting": "open"
+      }
+    },
+    "/flightaware/map/{fa-flight-id}": {
+      "name": "/flightaware/map/{fa-flight-id}",
+      "lambdaFunction": "flightAwareMap",
+      "permissions": {
+        "setting": "open"
+      }
+    }
+  }
+}
