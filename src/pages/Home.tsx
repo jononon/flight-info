@@ -437,34 +437,34 @@ const Home: React.FC = () => {
                             </p>
                           </IonCol>
                         </IonRow>
-                        {millisecondsUntilArrival > 0 && (
-                          <IonRow>
-                            <IonCol>
-                              <IonText
-                                color={
+                        <IonRow>
+                          <IonCol>
+                            <IonText
+                              color={
+                                flightStatuses[flight.Status.flight_status]
+                                  .color
+                              }
+                            >
+                              <h3 className="ion-no-margin">
+                                {
                                   flightStatuses[flight.Status.flight_status]
-                                    .color
+                                    .longStatusText
                                 }
-                              >
-                                <h3 className="ion-no-margin">
-                                  {
-                                    flightStatuses[flight.Status.flight_status]
-                                      .longStatusText
-                                  }
-                                </h3>
-                                {millisecondsUntilDeparture > 0 ? (
-                                  <h1 className="ion-no-margin">
-                                    Departing in {departureCountdown}
-                                  </h1>
-                                ) : (
-                                  <h1 className="ion-no-margin">
-                                    Arriving in {arrivalCountdown}
-                                  </h1>
-                                )}
-                              </IonText>
-                            </IonCol>
-                          </IonRow>
-                        )}
+                              </h3>
+                              {millisecondsUntilDeparture > 0 ? (
+                                <h1 className="ion-no-margin">
+                                  Departing in {departureCountdown}
+                                </h1>
+                              ) : millisecondsUntilArrival > 0 ? (
+                                <h1 className="ion-no-margin">
+                                  Arriving in {arrivalCountdown}
+                                </h1>
+                              ) : (
+                                <></>
+                              )}
+                            </IonText>
+                          </IonCol>
+                        </IonRow>
                         <IonRow>
                           <IonCol>
                             <p className="ion-no-margin">Departure</p>
