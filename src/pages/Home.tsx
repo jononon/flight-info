@@ -12,6 +12,7 @@ import {
   IonLabel,
   IonPage,
   IonRow,
+  IonSpinner,
   IonText,
   IonThumbnail,
   IonTitle,
@@ -279,6 +280,11 @@ const Home: React.FC = () => {
             <IonTitle size="large">Jonathan's Flights</IonTitle>
           </IonToolbar>
         </IonHeader>
+        {flights.length === 0 && (
+          <IonItem lines="none">
+            <IonSpinner name="dots"></IonSpinner>
+          </IonItem>
+        )}
         <IonAccordionGroup ref={accordionGroup} multiple={true}>
           {flights.map((flight, index) => {
             const ident = `${flight.marketing_airline_code}${flight.marketing_flight_number}`;
