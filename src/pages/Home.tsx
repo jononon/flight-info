@@ -270,7 +270,7 @@ const Home: React.FC = () => {
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonTitle>Jonathan Damico's Flights</IonTitle>
+          <IonTitle>Jonathan's Flights</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
