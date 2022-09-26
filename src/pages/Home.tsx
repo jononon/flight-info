@@ -330,6 +330,13 @@ const Home: React.FC = () => {
                       <h4 className="ion-no-margin">
                         {flight.start_city_name}
                       </h4>
+                      {flight.Status.departure_gate &&
+                        flight.Status.departure_terminal && (
+                          <p className="ion-no-margin">
+                            Terminal {flight.Status.departure_terminal}, Gate{" "}
+                            {flight.Status.departure_gate}
+                          </p>
+                        )}
                       <p className="ion-no-margin">
                         <small>Scheduled</small>
                       </p>
@@ -339,32 +346,38 @@ const Home: React.FC = () => {
                           timeZone: scheduledDepartureDateObject.timezone,
                         })}
                       </p>
-                      <p className="ion-no-margin">
-                        <small>Actual</small>
-                      </p>
                       {actualDepartureDate && (
-                        <p className="ion-no-margin">
-                          <IonText
-                            color={
-                              departureDelay !== undefined &&
-                              departureDelay <= 0
-                                ? "success"
-                                : "danger"
-                            }
-                          >
-                            {actualDepartureDate.toLocaleTimeString("en-US", {
-                              ...longTimeFormatOptions,
-                              timeZone: scheduledDepartureDateObject.timezone,
-                            })}
-                          </IonText>
-                        </p>
+                        <>
+                          <p className="ion-no-margin">
+                            <small>Actual</small>
+                          </p>
+                          <p className="ion-no-margin">
+                            <IonText
+                              color={
+                                departureDelay !== undefined &&
+                                departureDelay <= 0
+                                  ? "success"
+                                  : "danger"
+                              }
+                            >
+                              {actualDepartureDate.toLocaleTimeString("en-US", {
+                                ...longTimeFormatOptions,
+                                timeZone: scheduledDepartureDateObject.timezone,
+                              })}
+                            </IonText>
+                          </p>
+                        </>
                       )}
-                      {departureDelay && departureDelay !== 0 && (
+                      {departureDelay && departureDelay !== 0 ? (
                         <p className="ion-no-margin">
                           <small>
                             {durationString(departureDelay)}{" "}
                             {departureDelay < 0 ? "early" : "late"}
                           </small>
+                        </p>
+                      ) : (
+                        <p>
+                          <small></small>
                         </p>
                       )}
                     </IonCol>
@@ -374,6 +387,13 @@ const Home: React.FC = () => {
                         {flight.end_airport_code}
                       </h1>
                       <h4 className="ion-no-margin">{flight.end_city_name}</h4>
+                      {flight.Status.arrival_gate &&
+                        flight.Status.arrival_terminal && (
+                          <p className="ion-no-margin">
+                            Terminal {flight.Status.arrival_terminal}, Gate{" "}
+                            {flight.Status.arrival_gate}
+                          </p>
+                        )}
                       <p className="ion-no-margin">
                         <small>Scheduled</small>
                       </p>
@@ -383,32 +403,41 @@ const Home: React.FC = () => {
                           timeZone: scheduledArrivalDateObject.timezone,
                         })}
                       </p>
-                      <p className="ion-no-margin">
-                        <small>Actual</small>
-                      </p>
                       {actualArrivalDate && (
-                        <p className="ion-no-margin">
-                          <IonText
-                            color={
-                              arrivalDelay !== undefined && arrivalDelay <= 0
-                                ? "success"
-                                : "danger"
-                            }
-                          >
-                            {actualArrivalDate.toLocaleTimeString("en-US", {
-                              ...longTimeFormatOptions,
-                              timeZone: scheduledArrivalDateObject.timezone,
-                            })}
-                          </IonText>
-                        </p>
+                        <>
+                          <p className="ion-no-margin">
+                            <small>Actual</small>
+                          </p>
+                          <p className="ion-no-margin">
+                            <IonText
+                              color={
+                                arrivalDelay !== undefined && arrivalDelay <= 0
+                                  ? "success"
+                                  : "danger"
+                              }
+                            >
+                              {actualArrivalDate.toLocaleTimeString("en-US", {
+                                ...longTimeFormatOptions,
+                                timeZone: scheduledArrivalDateObject.timezone,
+                              })}
+                            </IonText>
+                          </p>
+                        </>
                       )}
-                      {arrivalDelay && arrivalDelay !== 0 && (
+                      {arrivalDelay && arrivalDelay !== 0 ? (
                         <p className="ion-no-margin">
                           <small>
                             {durationString(arrivalDelay)}{" "}
                             {arrivalDelay < 0 ? "early" : "late"}
                           </small>
                         </p>
+                      ) : (
+                        <p>
+                          <small></small>
+                        </p>
+                      )}
+                      {flight.Status.baggage_claim && (
+                        <p>Baggage Claim {flight.Status.baggage_claim}</p>
                       )}
                     </IonCol>
                   </IonRow>
