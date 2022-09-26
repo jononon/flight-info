@@ -28,10 +28,12 @@ const handler = async (event) => {
     console.log(`EVENT: ${JSON.stringify(event)}`);
 
     const ident = event.pathParameters.ident;
-    const start = event.queryParameters.start;
-    const end = event.queryParameters.end;
+    const start = event.queryStringParameters.start;
+    const end = event.queryStringParameters.end;
 
-    const flights = flightAwareClient.get(`flights/${ident}?start=${start}&end=${end}`).json()
+    const flights = await flightAwareClient.get(`flights/${ident}?start=${start}&end=${end}`).json()
+
+    console.log(flights);
 
     return {
       statusCode: 200,
@@ -39,7 +41,7 @@ const handler = async (event) => {
           "Access-Control-Allow-Origin": "*",
           "Access-Control-Allow-Headers": "*"
       }, 
-      body: JSON.stringify(flights[0]),
+      body: JSON.stringify(flights.flights[0]),
     };
 };
 
