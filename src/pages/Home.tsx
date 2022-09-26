@@ -10,6 +10,8 @@ import {
   IonLabel,
   IonPage,
   IonRow,
+  IonSegment,
+  IonText,
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
@@ -19,38 +21,89 @@ import "./Home.css";
 import { API } from "aws-amplify";
 import { FlightStatus } from "../types/FlightStatus";
 
-const flightStatuses: { [key: string]: { statusText: string; color: string } } =
-  {
-    "100": { statusText: "Unmonitored", color: "primary" }, //"Not Monitorable"
-    "200": { statusText: "Unmonitored", color: "primary" }, //"Not Monitored"
-    "300": { statusText: "Scheduled", color: "primary" }, //"Scheduled"
-    "301": { statusText: "On Time", color: "success" }, //"On Time"
-    "302": { statusText: "In Flight - On Time", color: "success" }, //"In Flight - On Time"
-    "303": { statusText: "Arrived - On Time", color: "success" }, //"Arrived - On Time"
-    "400": { statusText: "Cancelled", color: "#danger" }, //"Cancelled"
-    "401": { statusText: "Delayed", color: "#danger" }, //"Delayed"
-    "402": { statusText: "In Flight", color: "#warning" }, //"In Flight - late"
-    "403": { statusText: "Arrived", color: "#warning" }, //"Arrived - late"
-    "404": { statusText: "Diverted", color: "#danger" }, //"Diverted"
-    "405": { statusText: "Poss Delayed", color: "#danger" }, //"Possibly Delayed"
-    "406": { statusText: "In Flight", color: "#warning" }, //"In Flight - Possibly Late"
-    "407": { statusText: "Arrived", color: "#warning" }, //"Arrived - Possibly Late"
-    "408": { statusText: "Unknown", color: "primary" }, //"Unknown"
-  };
+const flightStatuses: {
+  [key: string]: { longStatusText: string; statusText: string; color: string };
+} = {
+  "100": {
+    longStatusText: "Not Monitorable",
+    statusText: "Unmonitored",
+    color: "primary",
+  },
+  "200": {
+    longStatusText: "Not Monitored",
+    statusText: "Unmonitored",
+    color: "primary",
+  },
+  "300": {
+    longStatusText: "Scheduled",
+    statusText: "Scheduled",
+    color: "primary",
+  },
+  "301": { longStatusText: "On Time", statusText: "On Time", color: "success" },
+  "302": {
+    longStatusText: "In Flight - On Time",
+    statusText: "In Flight - On Time",
+    color: "success",
+  },
+  "303": {
+    longStatusText: "Arrived - On Time",
+    statusText: "Arrived - On Time",
+    color: "success",
+  },
+  "400": {
+    longStatusText: "Cancelled",
+    statusText: "Cancelled",
+    color: "danger",
+  },
+  "401": { longStatusText: "Delayed", statusText: "Delayed", color: "danger" },
+  "402": {
+    longStatusText: "In Flight - Late",
+    statusText: "In Flight",
+    color: "danger",
+  },
+  "403": {
+    longStatusText: "Arrived - Late",
+    statusText: "Arrived",
+    color: "danger",
+  },
+  "404": {
+    longStatusText: "Diverted",
+    statusText: "Diverted",
+    color: "danger",
+  },
+  "405": {
+    longStatusText: "Possibly Delayed",
+    statusText: "Poss Delayed",
+    color: "danger",
+  },
+  "406": {
+    longStatusText: "In Flight - Possibly Late",
+    statusText: "In Flight",
+    color: "danger",
+  },
+  "407": {
+    longStatusText: "Arrived - Possibly Late",
+    statusText: "Arrived",
+    color: "danger",
+  },
+  "408": { longStatusText: "Unknown", statusText: "Unknown", color: "primary" },
+};
 
-const countdownString = (timeIn: Date) => {
-  const duration = timeIn.getTime() - new Date().getTime();
+const millisecondsUntilTime = (timeIn: Date) => {
+  return timeIn.getTime() - new Date().getTime();
+};
 
-  const days = Math.floor(duration / (1000 * 60 * 60 * 24));
-  const hours = Math.floor(duration / (1000 * 60 * 60) - days * 24);
+const durationString = (milliseconds: number) => {
+  const days = Math.floor(milliseconds / (1000 * 60 * 60 * 24));
+  const hours = Math.floor(milliseconds / (1000 * 60 * 60) - days * 24);
   const minutes = Math.floor(
-    duration / (1000 * 60) - (days * 24 * 60 + hours * 60)
+    milliseconds / (1000 * 60) - (days * 24 * 60 + hours * 60)
   );
 
   if (days > 0) {
-    return `${days}d ${hours}h`;
+    return `${days}d, ${hours}h`;
   } else if (hours > 0) {
-    return `${hours}h ${minutes}m`;
+    return `${hours}h, ${minutes}m`;
   } else {
     return `${minutes}m`;
   }
@@ -73,6 +126,10 @@ const Home: React.FC = () => {
 
   useEffect(() => {
     getFlightsFunction();
+
+    setInterval(() => {
+      getFlightsFunction();
+    }, 10000);
   }, []);
 
   useEffect(() => {
@@ -93,24 +150,88 @@ const Home: React.FC = () => {
       <IonContent fullscreen>
         <IonHeader collapse="condense">
           <IonToolbar>
-            <IonTitle size="large">Jonathan Damico's Flights</IonTitle>
+            <IonTitle size="large">Jonathan's Flights</IonTitle>
           </IonToolbar>
         </IonHeader>
         <IonAccordionGroup ref={accordionGroup} multiple={true}>
           {flights.map((flight, index) => {
-            const startTime = new Date(
-              flight["StartDateTime"]["date"] +
+            const scheduledDepartureDateObject =
+              flight.Status.ScheduledDepartureDateTime === undefined
+                ? flight.StartDateTime
+                : flight.Status.ScheduledDepartureDateTime;
+
+            const scheduledArrivalDateObject =
+              flight.Status.ScheduledArrivalDateTime === undefined
+                ? flight.EndDateTime
+                : flight.Status.ScheduledArrivalDateTime;
+
+            const scheduledDepartureDate = new Date(
+              scheduledDepartureDateObject.date +
                 "T" +
-                flight["StartDateTime"]["time"] +
-                flight["StartDateTime"]["utc_offset"]
+                scheduledDepartureDateObject.time +
+                scheduledDepartureDateObject.utc_offset
             );
 
-            const endTime = new Date(
-              flight["EndDateTime"]["date"] +
+            const scheduledArrivalDate = new Date(
+              scheduledArrivalDateObject.date +
                 "T" +
-                flight["EndDateTime"]["time"] +
-                flight["EndDateTime"]["utc_offset"]
+                scheduledArrivalDateObject.time +
+                scheduledArrivalDateObject.utc_offset
             );
+
+            const actualDepartureDateObject =
+              flight.Status.EstimatedDepartureDateTime;
+            const actualArrivalDateObject =
+              flight.Status.EstimatedArrivalDateTime;
+
+            const actualDepartureDate =
+              actualDepartureDateObject === undefined
+                ? undefined
+                : new Date(
+                    actualDepartureDateObject.date +
+                      "T" +
+                      actualDepartureDateObject.time +
+                      actualDepartureDateObject.utc_offset
+                  );
+
+            const actualArrivalDate =
+              actualArrivalDateObject === undefined
+                ? undefined
+                : new Date(
+                    actualArrivalDateObject.date +
+                      "T" +
+                      actualArrivalDateObject.time +
+                      actualArrivalDateObject.utc_offset
+                  );
+
+            const departureDelay =
+              actualDepartureDate === undefined ||
+              scheduledDepartureDate === undefined
+                ? undefined
+                : actualDepartureDate.getTime() -
+                  scheduledDepartureDate.getTime();
+
+            const arrivalDelay =
+              actualArrivalDate === undefined ||
+              scheduledArrivalDate === undefined
+                ? undefined
+                : actualArrivalDate.getTime() - scheduledArrivalDate.getTime();
+
+            const millisecondsUntilDeparture =
+              actualDepartureDate === undefined
+                ? millisecondsUntilTime(scheduledDepartureDate)
+                : millisecondsUntilTime(actualDepartureDate);
+
+            const millisecondsUntilArrival =
+              actualArrivalDate === undefined
+                ? millisecondsUntilTime(scheduledArrivalDate)
+                : millisecondsUntilTime(actualArrivalDate);
+
+            const departureCountdown = durationString(
+              millisecondsUntilDeparture
+            );
+
+            const arrivalCountdown = durationString(millisecondsUntilArrival);
 
             const shortDateFormatOptions: Intl.DateTimeFormatOptions = {
               weekday: "short",
@@ -119,28 +240,35 @@ const Home: React.FC = () => {
             };
 
             const shortTimeFormatOptions: Intl.DateTimeFormatOptions = {
-              hour12: false,
+              hour12: true,
               hour: "2-digit",
               minute: "2-digit",
+            };
+
+            const longTimeFormatOptions: Intl.DateTimeFormatOptions = {
+              hour12: true,
+              hour: "2-digit",
+              minute: "2-digit",
+              timeZoneName: "short",
             };
             return (
               <IonAccordion value={`${index}`} key={index}>
                 <IonItem slot="header" color="light">
                   <IonLabel>
-                    {startTime.toLocaleDateString(
-                      "en-GB",
+                    {scheduledDepartureDate.toLocaleDateString(
+                      "en-US",
                       shortDateFormatOptions
                     )}{" "}
                     |{" "}
-                    {startTime.toLocaleTimeString(
-                      "en-GB",
-                      shortTimeFormatOptions
-                    )}{" "}
+                    {scheduledDepartureDate.toLocaleTimeString("en-US", {
+                      ...shortTimeFormatOptions,
+                      timeZone: scheduledDepartureDateObject.timezone,
+                    })}{" "}
                     {flight.start_airport_code} - {flight.end_airport_code}{" "}
-                    {endTime.toLocaleTimeString(
-                      "en-GB",
-                      shortTimeFormatOptions
-                    )}
+                    {scheduledArrivalDate.toLocaleTimeString("en-US", {
+                      ...shortTimeFormatOptions,
+                      timeZone: scheduledArrivalDateObject.timezone,
+                    })}
                   </IonLabel>
                   <IonBadge
                     color={flightStatuses[flight.Status.flight_status].color}
@@ -149,37 +277,146 @@ const Home: React.FC = () => {
                   </IonBadge>
                 </IonItem>
 
-                <IonGrid slot="content" className="ion-padding">
+                <IonGrid
+                  slot="content"
+                  className="ion-padding"
+                  style={{ "--ion-grid-padding": "0px" }}
+                >
                   <IonRow>
                     <IonCol>
-                      <h5>
-                        {flight.marketing_airline_code}
+                      <h5 className="ion-no-margin">
+                        {flight.marketing_airline}{" "}
                         {flight.marketing_flight_number}
                       </h5>
+                      <p className="ion-no-margin">
+                        {flight.marketing_airline_code}
+                        {flight.marketing_flight_number}
+                      </p>
                     </IonCol>
                   </IonRow>
+                  {millisecondsUntilArrival > 0 && (
+                    <IonRow>
+                      <IonCol>
+                        <IonText
+                          color={
+                            flightStatuses[flight.Status.flight_status].color
+                          }
+                        >
+                          <h3 className="ion-no-margin">
+                            {
+                              flightStatuses[flight.Status.flight_status]
+                                .longStatusText
+                            }
+                          </h3>
+                          {millisecondsUntilDeparture > 0 ? (
+                            <h1 className="ion-no-margin">
+                              Departing in {departureCountdown}
+                            </h1>
+                          ) : (
+                            <h1 className="ion-no-margin">
+                              Arriving in {arrivalCountdown}
+                            </h1>
+                          )}
+                        </IonText>
+                      </IonCol>
+                    </IonRow>
+                  )}
                   <IonRow>
                     <IonCol>
-                      <h3>
-                        {flight.start_city_name} ({flight.start_airport_code})
-                      </h3>
-                      <p>{startTime.toLocaleString()}</p>
+                      <p className="ion-no-margin">Departure</p>
+                      <h1 className="ion-no-margin">
+                        {flight.start_airport_code}
+                      </h1>
+                      <h4 className="ion-no-margin">
+                        {flight.start_city_name}
+                      </h4>
+                      <p className="ion-no-margin">
+                        <small>Scheduled</small>
+                      </p>
+                      <p className="ion-no-margin">
+                        {scheduledDepartureDate.toLocaleTimeString("en-US", {
+                          ...longTimeFormatOptions,
+                          timeZone: scheduledDepartureDateObject.timezone,
+                        })}
+                      </p>
+                      <p className="ion-no-margin">
+                        <small>Actual</small>
+                      </p>
+                      {actualDepartureDate && (
+                        <p className="ion-no-margin">
+                          <IonText
+                            color={
+                              departureDelay !== undefined &&
+                              departureDelay <= 0
+                                ? "success"
+                                : "danger"
+                            }
+                          >
+                            {actualDepartureDate.toLocaleTimeString("en-US", {
+                              ...longTimeFormatOptions,
+                              timeZone: scheduledDepartureDateObject.timezone,
+                            })}
+                          </IonText>
+                        </p>
+                      )}
+                      {departureDelay && departureDelay !== 0 && (
+                        <p className="ion-no-margin">
+                          <small>
+                            {durationString(departureDelay)}{" "}
+                            {departureDelay < 0 ? "early" : "late"}
+                          </small>
+                        </p>
+                      )}
                     </IonCol>
                     <IonCol class="ion-text-end">
-                      <h3>
-                        {flight.end_city_name} ({flight.end_airport_code})
-                      </h3>
-                      <p>{endTime.toLocaleString()}</p>
+                      <p className="ion-no-margin">Arrival</p>
+                      <h1 className="ion-no-margin">
+                        {flight.end_airport_code}
+                      </h1>
+                      <h4 className="ion-no-margin">{flight.end_city_name}</h4>
+                      <p className="ion-no-margin">
+                        <small>Scheduled</small>
+                      </p>
+                      <p className="ion-no-margin">
+                        {scheduledArrivalDate.toLocaleTimeString("en-US", {
+                          ...longTimeFormatOptions,
+                          timeZone: scheduledArrivalDateObject.timezone,
+                        })}
+                      </p>
+                      <p className="ion-no-margin">
+                        <small>Actual</small>
+                      </p>
+                      {actualArrivalDate && (
+                        <p className="ion-no-margin">
+                          <IonText
+                            color={
+                              arrivalDelay !== undefined && arrivalDelay <= 0
+                                ? "success"
+                                : "danger"
+                            }
+                          >
+                            {actualArrivalDate.toLocaleTimeString("en-US", {
+                              ...longTimeFormatOptions,
+                              timeZone: scheduledArrivalDateObject.timezone,
+                            })}
+                          </IonText>
+                        </p>
+                      )}
+                      {arrivalDelay && arrivalDelay !== 0 && (
+                        <p className="ion-no-margin">
+                          <small>
+                            {durationString(arrivalDelay)}{" "}
+                            {arrivalDelay < 0 ? "early" : "late"}
+                          </small>
+                        </p>
+                      )}
                     </IonCol>
                   </IonRow>
                   <IonRow>
                     <IonCol>
-                      <p>Duration: {flight.duration}</p>
-                    </IonCol>
-                  </IonRow>
-                  <IonRow>
-                    <IonCol>
-                      <p>Countdown: {countdownString(startTime)}</p>
+                      <p className="ion-no-margin">
+                        Duration: {flight.duration}
+                      </p>
                     </IonCol>
                   </IonRow>
                 </IonGrid>
