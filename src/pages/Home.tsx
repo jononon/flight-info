@@ -529,7 +529,7 @@ const Home: React.FC = () => {
                             {departureDelay && departureDelay !== 0 ? (
                               <p className="ion-no-margin">
                                 <small>
-                                  {durationString(departureDelay)}{" "}
+                                  {durationString(Math.abs(departureDelay))}{" "}
                                   {departureDelay < 0 ? "early" : "late"}
                                 </small>
                               </p>
@@ -596,7 +596,7 @@ const Home: React.FC = () => {
                             {arrivalDelay && arrivalDelay !== 0 ? (
                               <p className="ion-no-margin">
                                 <small>
-                                  {durationString(arrivalDelay)}{" "}
+                                  {durationString(Math.abs(arrivalDelay))}{" "}
                                   {arrivalDelay < 0 ? "early" : "late"}
                                 </small>
                               </p>
