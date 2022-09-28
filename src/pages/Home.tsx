@@ -119,11 +119,11 @@ const Home: React.FC = () => {
 
   const [flights, setFlights] = useState<Array<FlightStatus>>([]);
   const [flightMaps, setFlightMaps] = useState<{
-    [key: string]: string;
+    [key: string]: {map: string, fetchedDate: Date};
   }>({});
 
   const [flightAwareStatuses, setFlightAwareStatuses] = useState<{
-    [key: string]: FlightAwareStatus;
+    [key: string]: { status: FlightAwareStatus, fetchedDate: Date};
   }>({});
 
   const getFlightsFunction = async () => {
@@ -144,27 +144,34 @@ const Home: React.FC = () => {
     end: string,
     getMap: boolean
   ) => {
-    const flightInfo = (await API.get(
-      "flightAwareAdapter",
-      `/flightaware/details/${ident}?start=${start}&end=${end}`,
-      {}
-    )) as FlightAwareStatus;
-
-    setFlightAwareStatuses((flightAwareStatuses) => ({
-      ...flightAwareStatuses,
-      [ident]: flightInfo,
-    }));
-
-    if (getMap) {
-      const map = (await API.get(
+    
+    if(flightAwareStatuses[ident] !== undefined && (new Date().getTime() - flightAwareStatuses[ident].fetchedDate.getTime()) > 900000) {
+      const newFlightInfo = {status: (await API.get(
         "flightAwareAdapter",
-        `/flightaware/map/${flightInfo.fa_flight_id}?width=${mapSize}&height=${mapSize}`,
+        `/flightaware/details/${ident}?start=${start}&end=${end}`,
         {}
-      )) as { map: string };
+        )) as FlightAwareStatus,
+        fetchedDate: new Date()
+      }
+      
+      setFlightAwareStatuses((flightAwareStatuses) => ({
+        ...flightAwareStatuses,
+        [ident]: newFlightInfo,
+      }));
+    }
+
+    if (getMap && flightMaps[ident] !== undefined && (new Date().getTime() - flightMaps[ident].fetchedDate.getTime()) > 900000) {
+      const map = {...(await API.get(
+        "flightAwareAdapter",
+        `/flightaware/map/${flightAwareStatuses[ident].status.fa_flight_id}?width=${mapSize}&height=${mapSize}`,
+        {}
+      )) as { map: string },
+      fetchedDate: new Date(),
+      }
 
       setFlightMaps((flightMaps) => ({
         ...flightMaps,
-        [ident]: map.map,
+        [ident]: map,
       }));
     }
   };
@@ -255,17 +262,25 @@ const Home: React.FC = () => {
   useEffect(() => {
     getFlightsFunction();
 
-    setInterval(() => {
-      getFlightsFunction();
-    }, 30000);
-  }, []);
+    let flightIndexToShow = 0;
 
-  useEffect(() => {
+    for(const flight of flights) {
+      if(["303", "403", "407"].includes(flight.Status.flight_status)) {
+        flightIndexToShow++;
+      } else {
+        break;
+      }
+    }
+
     if (!accordionGroup.current) {
       return;
     }
 
-    accordionGroup.current.value = ["0"];
+    accordionGroup.current.value = [`${flightIndexToShow}`];
+
+    setInterval(() => {
+      getFlightsFunction();
+    }, 30000);
   }, []);
 
   return (
@@ -616,15 +631,15 @@ const Home: React.FC = () => {
                             <IonCol>
                               <IonButton
                                 shape="round"
-                                href={`https://flightaware.com/live/flight/id/${flightAwareStatuses[ident].fa_flight_id}`}
+                                href={`https://flightaware.com/live/flight/id/${flightAwareStatuses[ident].status.fa_flight_id}`}
                               >
                                 Track on FlightAware
                               </IonButton>
-                              {flightAwareStatuses[ident]
-                                .inbound_fa_flight_id && (
+                              {flightAwareStatuses[ident].
+                                status.inbound_fa_flight_id && (
                                 <IonButton
                                   shape="round"
-                                  href={`https://flightaware.com/live/flight/id/${flightAwareStatuses[ident].inbound_fa_flight_id}`}
+                                  href={`https://flightaware.com/live/flight/id/${flightAwareStatuses[ident].status.inbound_fa_flight_id}`}
                                 >
                                   Track Inbound Flight on FlightAware
                                 </IonButton>
