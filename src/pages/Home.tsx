@@ -501,13 +501,9 @@ const Home: React.FC = () => {
                             <h4 className="ion-no-margin">
                               {flight.start_city_name}
                             </h4>
-                            {flight.Status.departure_gate &&
-                              flight.Status.departure_terminal && (
-                                <p className="ion-no-margin">
-                                  Terminal {flight.Status.departure_terminal},
-                                  Gate {flight.Status.departure_gate}
-                                </p>
-                              )}
+                            <p className="ion-no-margin">
+                              {flight.Status.departure_terminal && (<span>Terminal {flight.Status.departure_terminal}</span>)}{flight.Status.departure_gate && (<span>, Gate {flight.Status.departure_gate}</span>)}
+                            </p>
                             <p className="ion-no-margin">
                               <small>Scheduled</small>
                             </p>
@@ -569,13 +565,7 @@ const Home: React.FC = () => {
                             <h4 className="ion-no-margin">
                               {flight.end_city_name}
                             </h4>
-                            {flight.Status.arrival_gate &&
-                              flight.Status.arrival_terminal && (
-                                <p className="ion-no-margin">
-                                  Terminal {flight.Status.arrival_terminal},
-                                  Gate {flight.Status.arrival_gate}
-                                </p>
-                              )}
+                            {flight.Status.arrival_terminal && (<span>Terminal {flight.Status.arrival_terminal}</span>)}{flight.Status.arrival_gate && (<span>, Gate {flight.Status.arrival_gate}</span>)}
                             <p className="ion-no-margin">
                               <small>Scheduled</small>
                             </p>
