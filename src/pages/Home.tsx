@@ -134,6 +134,7 @@ const Home: React.FC = () => {
     )) as Array<FlightStatus>;
     setFlights(newFlights);
     await updateFlightAwareStatuses(newFlights);
+    return newFlights;
   };
 
   let mapSize = Math.min(400, Math.floor(window.innerWidth) - 60);
@@ -260,11 +261,11 @@ const Home: React.FC = () => {
   };
 
   const setupDataRequests = async() => {
-    await getFlightsFunction();
+    const newFlights = await getFlightsFunction();
 
     let flightIndexToShow = 0;
 
-    for(const flight of flights) {
+    for(const flight of newFlights) {
       if(["303", "403", "407"].includes(flight.Status.flight_status)) {
         flightIndexToShow++;
       } else {
