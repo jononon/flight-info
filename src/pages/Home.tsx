@@ -125,7 +125,7 @@ const Home: React.FC = () => {
   const [flightAwareStatuses, setFlightAwareStatuses] = useState<{
     [key: string]: { status: FlightAwareStatus, fetchedDate: Date};
   }>({});
-
+  
   const getFlightsFunction = async () => {
     const newFlights = (await API.get(
       "tripItFlightsAdapter",
@@ -145,7 +145,7 @@ const Home: React.FC = () => {
     getMap: boolean
   ) => {
     
-    if(flightAwareStatuses[ident] !== undefined && (new Date().getTime() - flightAwareStatuses[ident].fetchedDate.getTime()) > 900000) {
+    if(flightAwareStatuses[ident] === undefined || (new Date().getTime() - flightAwareStatuses[ident].fetchedDate.getTime()) > 900000) {
       const newFlightInfo = {status: (await API.get(
         "flightAwareAdapter",
         `/flightaware/details/${ident}?start=${start}&end=${end}`,
@@ -160,7 +160,7 @@ const Home: React.FC = () => {
       }));
     }
 
-    if (getMap && flightMaps[ident] !== undefined && (new Date().getTime() - flightMaps[ident].fetchedDate.getTime()) > 900000) {
+    if (getMap && (flightMaps[ident] === undefined || (new Date().getTime() - flightMaps[ident].fetchedDate.getTime()) > 900000)) {
       const map = {...(await API.get(
         "flightAwareAdapter",
         `/flightaware/map/${flightAwareStatuses[ident].status.fa_flight_id}?width=${mapSize}&height=${mapSize}`,
@@ -259,8 +259,8 @@ const Home: React.FC = () => {
     }
   };
 
-  useEffect(() => {
-    getFlightsFunction();
+  const setupDataRequests = async() => {
+    await getFlightsFunction();
 
     let flightIndexToShow = 0;
 
@@ -277,10 +277,14 @@ const Home: React.FC = () => {
     }
 
     accordionGroup.current.value = [`${flightIndexToShow}`];
-
+    
     setInterval(() => {
       getFlightsFunction();
     }, 30000);
+  }
+
+  useEffect(() => {
+    setupDataRequests();
   }, []);
 
   return (
