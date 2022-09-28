@@ -125,7 +125,7 @@ const Home: React.FC = () => {
   const [flightAwareStatuses, setFlightAwareStatuses] = useState<{
     [key: string]: { status: FlightAwareStatus, fetchedDate: Date};
   }>({});
-
+  
   const getFlightsFunction = async () => {
     const newFlights = (await API.get(
       "tripItFlightsAdapter",
@@ -259,8 +259,8 @@ const Home: React.FC = () => {
     }
   };
 
-  useEffect(() => {
-    getFlightsFunction();
+  const setupDataRequests = async() => {
+    await getFlightsFunction();
 
     let flightIndexToShow = 0;
 
@@ -277,10 +277,14 @@ const Home: React.FC = () => {
     }
 
     accordionGroup.current.value = [`${flightIndexToShow}`];
-
+    
     setInterval(() => {
       getFlightsFunction();
     }, 30000);
+  }
+
+  useEffect(() => {
+    setupDataRequests();
   }, []);
 
   return (
