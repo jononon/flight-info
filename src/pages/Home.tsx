@@ -97,7 +97,8 @@ const millisecondsUntilTime = (timeIn: Date) => {
   return timeIn.getTime() - new Date().getTime();
 };
 
-const durationString = (milliseconds: number) => {
+const durationString = (millisecondsIn: number) => {
+  const milliseconds = Math.abs(millisecondsIn);
   const days = Math.floor(milliseconds / (1000 * 60 * 60 * 24));
   const hours = Math.floor(milliseconds / (1000 * 60 * 60) - days * 24);
   const minutes = Math.floor(
@@ -529,7 +530,7 @@ const Home: React.FC = () => {
                             {departureDelay && departureDelay !== 0 ? (
                               <p className="ion-no-margin">
                                 <small>
-                                  {durationString(Math.abs(departureDelay))}{" "}
+                                  {durationString(departureDelay)}{" "}
                                   {departureDelay < 0 ? "early" : "late"}
                                 </small>
                               </p>
@@ -596,7 +597,7 @@ const Home: React.FC = () => {
                             {arrivalDelay && arrivalDelay !== 0 ? (
                               <p className="ion-no-margin">
                                 <small>
-                                  {durationString(Math.abs(arrivalDelay))}{" "}
+                                  {durationString(arrivalDelay)}{" "}
                                   {arrivalDelay < 0 ? "early" : "late"}
                                 </small>
                               </p>
