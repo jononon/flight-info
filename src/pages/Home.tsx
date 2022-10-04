@@ -121,10 +121,12 @@ const Home: React.FC = () => {
   const [flightMaps, setFlightMaps] = useState<{
     [key: string]: {map: string, fetchedDate: Date};
   }>({});
+  const flightMapsRef = useRef(flightMaps);
 
   const [flightAwareStatuses, setFlightAwareStatuses] = useState<{
     [key: string]: { status: FlightAwareStatus, fetchedDate: Date};
   }>({});
+  const flightAwareStatusesRef = useRef(flightAwareStatuses);
   
   const getFlightsFunction = async () => {
     const newFlights = (await API.get(
@@ -146,7 +148,7 @@ const Home: React.FC = () => {
     getMap: boolean
   ) => {
     
-    if(flightAwareStatuses[ident] === undefined || (new Date().getTime() - flightAwareStatuses[ident].fetchedDate.getTime()) > 900000) {
+    if(flightAwareStatusesRef.current[ident] === undefined || (new Date().getTime() - flightAwareStatusesRef.current[ident].fetchedDate.getTime()) > 900000) {
       const newFlightInfo = {status: (await API.get(
         "flightAwareAdapter",
         `/flightaware/details/${ident}?start=${start}&end=${end}`,
@@ -161,7 +163,7 @@ const Home: React.FC = () => {
       }));
     }
 
-    if (getMap && (flightMaps[ident] === undefined || (new Date().getTime() - flightMaps[ident].fetchedDate.getTime()) > 900000)) {
+    if (getMap && (flightMapsRef.current[ident] === undefined || (new Date().getTime() - flightMapsRef.current[ident].fetchedDate.getTime()) > 900000)) {
       const map = {...(await API.get(
         "flightAwareAdapter",
         `/flightaware/map/${flightAwareStatuses[ident].status.fa_flight_id}?width=${mapSize}&height=${mapSize}`,
