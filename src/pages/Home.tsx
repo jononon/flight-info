@@ -18,7 +18,9 @@ import {
   IonThumbnail,
   IonTitle,
   IonToolbar,
+  useIonToast,
 } from "@ionic/react";
+import { clipboardOutline } from "ionicons/icons";
 import { useRef, useEffect, useState } from "react";
 import ExploreContainer from "../components/ExploreContainer";
 import "./Home.css";
@@ -116,6 +118,19 @@ const durationString = (millisecondsIn: number) => {
 };
 
 const Home: React.FC = () => {
+  const [present] = useIonToast();
+
+  const presentToast = (
+    message: string,
+    position: "top" | "middle" | "bottom"
+  ) => {
+    present({
+      message: message,
+      duration: 2000,
+      position: position,
+    });
+  };
+
   const accordionGroup = useRef<null | HTMLIonAccordionGroupElement>(null);
 
   const [flights, setFlights] = useState<Array<FlightStatus>>([]);
@@ -479,19 +494,19 @@ const Home: React.FC = () => {
                               {flight.marketing_flight_number}
                             </h5>
                             <p className="ion-no-margin">
-                              {flight.marketing_airline_code}
-                              {flight.marketing_flight_number}{" "}
-                              <IonIcon
-                                name="clipboard-outline"
+                              {ident}{" "}
+                              <a
+                                role="button"
                                 onClick={() => {
-                                  navigator.clipboard.writeText(
-                                    `${flight.marketing_airline_code}${flight.marketing_flight_number}`
-                                  );
+                                  navigator.clipboard.writeText(ident);
                                 }}
-                              ></IonIcon>
+                              >
+                                <IonIcon icon={clipboardOutline}></IonIcon>
+                              </a>
                             </p>
                           </IonCol>
                         </IonRow>
+                        <br />
                         <IonRow>
                           <IonCol>
                             <IonText
@@ -520,6 +535,7 @@ const Home: React.FC = () => {
                             </IonText>
                           </IonCol>
                         </IonRow>
+                        <br />
                         <IonRow>
                           <IonCol>
                             <p className="ion-no-margin">Departure</p>
@@ -665,27 +681,117 @@ const Home: React.FC = () => {
                             )}
                           </IonCol>
                         </IonRow>
-                        {flightAwareStatuses[ident] && (
-                          <IonRow>
-                            <IonCol>
-                              <IonButton
-                                shape="round"
-                                href={`https://flightaware.com/live/flight/id/${flightAwareStatuses[ident].status.fa_flight_id}`}
-                              >
-                                Track on FlightAware
-                              </IonButton>
-                              {flightAwareStatuses[ident].status
-                                .inbound_fa_flight_id && (
-                                <IonButton
-                                  shape="round"
-                                  href={`https://flightaware.com/live/flight/id/${flightAwareStatuses[ident].status.inbound_fa_flight_id}`}
-                                >
-                                  Track Inbound Flight on FlightAware
-                                </IonButton>
+                        <IonRow>
+                          <IonCol>
+                            <IonButton
+                              onClick={async () => {
+                                const departureDateTimeString =
+                                  actualDepartureDate
+                                    ? actualDepartureDate.toLocaleTimeString(
+                                        "en-US",
+                                        {
+                                          ...longTimeFormatOptions,
+                                          timeZone:
+                                            scheduledDepartureDateObject.timezone,
+                                        }
+                                      )
+                                    : scheduledDepartureDate.toLocaleTimeString(
+                                        "en-US",
+                                        {
+                                          ...longTimeFormatOptions,
+                                          timeZone:
+                                            scheduledDepartureDateObject.timezone,
+                                        }
+                                      );
+
+                                const arrivalDateTimeString = actualArrivalDate
+                                  ? actualArrivalDate.toLocaleTimeString(
+                                      "en-US",
+                                      {
+                                        ...longTimeFormatOptions,
+                                        timeZone:
+                                          scheduledArrivalDateObject.timezone,
+                                      }
+                                    )
+                                  : scheduledArrivalDate.toLocaleTimeString(
+                                      "en-US",
+                                      {
+                                        ...longTimeFormatOptions,
+                                        timeZone:
+                                          scheduledArrivalDateObject.timezone,
+                                      }
+                                    );
+
+                                const shareData = {
+                                  title: `Jonathan Damico's Flight`,
+                                  text: `${ident}\n${
+                                    flightStatuses[flight.Status.flight_status]
+                                      .longStatusText
+                                  }\nDep ${departureDateTimeString} @ ${
+                                    flight.start_airport_code
+                                  }${
+                                    flight.Status.departure_terminal
+                                      ? ` Terminal ${flight.Status.departure_terminal}`
+                                      : ""
+                                  }${
+                                    flight.Status.departure_gate
+                                      ? ` Gate ${flight.Status.departure_gate}`
+                                      : ""
+                                  }\nArr ${arrivalDateTimeString} @ ${
+                                    flight.end_airport_code
+                                  }${
+                                    flight.Status.arrival_terminal
+                                      ? ` Terminal ${flight.Status.arrival_terminal}`
+                                      : ""
+                                  }${
+                                    flight.Status.arrival_gate
+                                      ? ` Gate ${flight.Status.arrival_gate}`
+                                      : ""
+                                  }${
+                                    flight.Status.baggage_claim
+                                      ? ` Baggage Claim ${flight.Status.baggage_claim}`
+                                      : ""
+                                  }`,
+                                  url: `https://flights.jonathandamico.me`,
+                                };
+
+                                try {
+                                  await navigator.share(shareData);
+                                } catch (err) {
+                                  navigator.clipboard.writeText(
+                                    shareData.text + " \njdami.co/flights"
+                                  );
+                                  presentToast("Copied to clipboard", "top");
+                                }
+                              }}
+                            >
+                              Share Details
+                            </IonButton>
+                            {flightAwareStatuses[ident] &&
+                              flightAwareStatuses[ident].status && (
+                                <>
+                                  {flightAwareStatuses[ident].status
+                                    .fa_flight_id && (
+                                    <IonButton
+                                      shape="round"
+                                      href={`https://flightaware.com/live/flight/id/${flightAwareStatuses[ident].status.fa_flight_id}`}
+                                    >
+                                      Track on FlightAware
+                                    </IonButton>
+                                  )}
+                                  {flightAwareStatuses[ident].status
+                                    .inbound_fa_flight_id && (
+                                    <IonButton
+                                      shape="round"
+                                      href={`https://flightaware.com/live/flight/id/${flightAwareStatuses[ident].status.inbound_fa_flight_id}`}
+                                    >
+                                      Track Inbound Flight on FlightAware
+                                    </IonButton>
+                                  )}
+                                </>
                               )}
-                            </IonCol>
-                          </IonRow>
-                        )}
+                          </IonCol>
+                        </IonRow>
                       </IonGrid>
                     </IonCol>
                     <IonCol size="auto">
