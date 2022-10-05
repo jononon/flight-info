@@ -128,6 +128,11 @@ const Home: React.FC = () => {
   }>({});
   const flightAwareStatusesRef = useRef(flightAwareStatuses);
   
+  useEffect(() => {
+    flightMapsRef.current = flightMaps;
+    flightAwareStatusesRef.current = flightAwareStatuses;
+  })
+
   const getFlightsFunction = async () => {
     const newFlights = (await API.get(
       "tripItFlightsAdapter",
