@@ -7,6 +7,7 @@ import {
   IonContent,
   IonGrid,
   IonHeader,
+  IonIcon,
   IonImg,
   IonItem,
   IonLabel,
@@ -119,19 +120,19 @@ const Home: React.FC = () => {
 
   const [flights, setFlights] = useState<Array<FlightStatus>>([]);
   const [flightMaps, setFlightMaps] = useState<{
-    [key: string]: {map: string, fetchedDate: Date};
+    [key: string]: { map: string; fetchedDate: Date };
   }>({});
   const flightMapsRef = useRef(flightMaps);
 
   const [flightAwareStatuses, setFlightAwareStatuses] = useState<{
-    [key: string]: { status: FlightAwareStatus, fetchedDate: Date};
+    [key: string]: { status: FlightAwareStatus; fetchedDate: Date };
   }>({});
   const flightAwareStatusesRef = useRef(flightAwareStatuses);
-  
+
   useEffect(() => {
     flightMapsRef.current = flightMaps;
     flightAwareStatusesRef.current = flightAwareStatuses;
-  })
+  });
 
   const getFlightsFunction = async () => {
     const newFlights = (await API.get(
@@ -152,30 +153,42 @@ const Home: React.FC = () => {
     end: string,
     getMap: boolean
   ) => {
-    
-    if(flightAwareStatusesRef.current[ident] === undefined || (new Date().getTime() - flightAwareStatusesRef.current[ident].fetchedDate.getTime()) > 900000) {
-      const newFlightInfo = {status: (await API.get(
-        "flightAwareAdapter",
-        `/flightaware/details/${ident}?start=${start}&end=${end}`,
-        {}
+    if (
+      flightAwareStatusesRef.current[ident] === undefined ||
+      new Date().getTime() -
+        flightAwareStatusesRef.current[ident].fetchedDate.getTime() >
+        900000
+    ) {
+      const newFlightInfo = {
+        status: (await API.get(
+          "flightAwareAdapter",
+          `/flightaware/details/${ident}?start=${start}&end=${end}`,
+          {}
         )) as FlightAwareStatus,
-        fetchedDate: new Date()
-      }
-      
+        fetchedDate: new Date(),
+      };
+
       setFlightAwareStatuses((flightAwareStatuses) => ({
         ...flightAwareStatuses,
         [ident]: newFlightInfo,
       }));
     }
 
-    if (getMap && (flightMapsRef.current[ident] === undefined || (new Date().getTime() - flightMapsRef.current[ident].fetchedDate.getTime()) > 900000)) {
-      const map = {...(await API.get(
-        "flightAwareAdapter",
-        `/flightaware/map/${flightAwareStatuses[ident].status.fa_flight_id}?width=${mapSize}&height=${mapSize}`,
-        {}
-      )) as { map: string },
-      fetchedDate: new Date(),
-      }
+    if (
+      getMap &&
+      (flightMapsRef.current[ident] === undefined ||
+        new Date().getTime() -
+          flightMapsRef.current[ident].fetchedDate.getTime() >
+          900000)
+    ) {
+      const map = {
+        ...((await API.get(
+          "flightAwareAdapter",
+          `/flightaware/map/${flightAwareStatuses[ident].status.fa_flight_id}?width=${mapSize}&height=${mapSize}`,
+          {}
+        )) as { map: string }),
+        fetchedDate: new Date(),
+      };
 
       setFlightMaps((flightMaps) => ({
         ...flightMaps,
@@ -267,13 +280,13 @@ const Home: React.FC = () => {
     }
   };
 
-  const setupDataRequests = async() => {
+  const setupDataRequests = async () => {
     const newFlights = await getFlightsFunction();
 
     let flightIndexToShow = 0;
 
-    for(const flight of newFlights) {
-      if(["303", "403", "407"].includes(flight.Status.flight_status)) {
+    for (const flight of newFlights) {
+      if (["303", "403", "407"].includes(flight.Status.flight_status)) {
         flightIndexToShow++;
       } else {
         break;
@@ -285,11 +298,11 @@ const Home: React.FC = () => {
     }
 
     accordionGroup.current.value = [`${flightIndexToShow}`];
-    
+
     setInterval(() => {
       getFlightsFunction();
     }, 30000);
-  }
+  };
 
   useEffect(() => {
     setupDataRequests();
@@ -467,7 +480,15 @@ const Home: React.FC = () => {
                             </h5>
                             <p className="ion-no-margin">
                               {flight.marketing_airline_code}
-                              {flight.marketing_flight_number}
+                              {flight.marketing_flight_number}{" "}
+                              <IonIcon
+                                name="clipboard-outline"
+                                onClick={() => {
+                                  navigator.clipboard.writeText(
+                                    `${flight.marketing_airline_code}${flight.marketing_flight_number}`
+                                  );
+                                }}
+                              ></IonIcon>
                             </p>
                           </IonCol>
                         </IonRow>
@@ -509,7 +530,16 @@ const Home: React.FC = () => {
                               {flight.start_city_name}
                             </h4>
                             <p className="ion-no-margin">
-                              {flight.Status.departure_terminal && (<span>Terminal {flight.Status.departure_terminal}</span>)}{flight.Status.departure_gate && (<span>, Gate {flight.Status.departure_gate}</span>)}
+                              {flight.Status.departure_terminal && (
+                                <span>
+                                  Terminal {flight.Status.departure_terminal}
+                                </span>
+                              )}
+                              {flight.Status.departure_gate && (
+                                <span>
+                                  , Gate {flight.Status.departure_gate}
+                                </span>
+                              )}
                             </p>
                             <p className="ion-no-margin">
                               <small>Scheduled</small>
@@ -572,7 +602,14 @@ const Home: React.FC = () => {
                             <h4 className="ion-no-margin">
                               {flight.end_city_name}
                             </h4>
-                            {flight.Status.arrival_terminal && (<span>Terminal {flight.Status.arrival_terminal}</span>)}{flight.Status.arrival_gate && (<span>, Gate {flight.Status.arrival_gate}</span>)}
+                            {flight.Status.arrival_terminal && (
+                              <span>
+                                Terminal {flight.Status.arrival_terminal}
+                              </span>
+                            )}
+                            {flight.Status.arrival_gate && (
+                              <span>, Gate {flight.Status.arrival_gate}</span>
+                            )}
                             <p className="ion-no-margin">
                               <small>Scheduled</small>
                             </p>
@@ -637,8 +674,8 @@ const Home: React.FC = () => {
                               >
                                 Track on FlightAware
                               </IonButton>
-                              {flightAwareStatuses[ident].
-                                status.inbound_fa_flight_id && (
+                              {flightAwareStatuses[ident].status
+                                .inbound_fa_flight_id && (
                                 <IonButton
                                   shape="round"
                                   href={`https://flightaware.com/live/flight/id/${flightAwareStatuses[ident].status.inbound_fa_flight_id}`}
