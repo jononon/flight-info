@@ -752,7 +752,6 @@ const Home: React.FC = () => {
                                       ? ` Baggage Claim ${flight.Status.baggage_claim}`
                                       : ""
                                   }`,
-                                  url: `https://flights.jonathandamico.me`,
                                 };
 
                                 try {
