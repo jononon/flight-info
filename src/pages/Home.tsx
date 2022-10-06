@@ -684,6 +684,7 @@ const Home: React.FC = () => {
                         <IonRow>
                           <IonCol>
                             <IonButton
+                            shape="round"
                               onClick={async () => {
                                 const departureDateTimeString =
                                   actualDepartureDate
