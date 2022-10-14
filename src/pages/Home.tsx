@@ -168,6 +168,8 @@ const Home: React.FC = () => {
     end: string,
     getMap: boolean
   ) => {
+    let fa_flight_id = undefined;
+
     if (
       flightAwareStatusesRef.current[ident] === undefined ||
       new Date().getTime() -
@@ -182,6 +184,8 @@ const Home: React.FC = () => {
         )) as FlightAwareStatus,
         fetchedDate: new Date(),
       };
+
+      fa_flight_id = newFlightInfo.status.fa_flight_id;
 
       setFlightAwareStatuses((flightAwareStatuses) => ({
         ...flightAwareStatuses,
@@ -199,7 +203,7 @@ const Home: React.FC = () => {
       const map = {
         ...((await API.get(
           "flightAwareAdapter",
-          `/flightaware/map/${flightAwareStatusesRef.current[ident].status.fa_flight_id}?width=${mapSize}&height=${mapSize}`,
+          `/flightaware/map/${fa_flight_id}?width=${mapSize}&height=${mapSize}`,
           {}
         )) as { map: string }),
         fetchedDate: new Date(),
