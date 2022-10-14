@@ -199,7 +199,7 @@ const Home: React.FC = () => {
       const map = {
         ...((await API.get(
           "flightAwareAdapter",
-          `/flightaware/map/${flightAwareStatuses[ident].status.fa_flight_id}?width=${mapSize}&height=${mapSize}`,
+          `/flightaware/map/${flightAwareStatusesRef.current[ident].status.fa_flight_id}?width=${mapSize}&height=${mapSize}`,
           {}
         )) as { map: string }),
         fetchedDate: new Date(),
