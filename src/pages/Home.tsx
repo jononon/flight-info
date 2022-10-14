@@ -804,7 +804,7 @@ const Home: React.FC = () => {
                           <IonCol>
                             <IonThumbnail style={{ "--size": `${mapSize}px` }}>
                               <IonImg
-                                src={`data:image/png;base64,${flightMaps[ident]}`}
+                                src={`data:image/png;base64,${flightMaps[ident].map}`}
                               />
                             </IonThumbnail>
                           </IonCol>
