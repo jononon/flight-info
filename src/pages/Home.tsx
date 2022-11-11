@@ -1496,8 +1496,8 @@ const Home: React.FC = () => {
                               </a>
                             </p>
                           </IonCol>
-                          <IonCol>
-                            <IonThumbnail slot="end">
+                          <IonCol class="ion-text-end">
+                            <IonThumbnail>
                               <img src={`assets/airline-logos/${IATAToICAO[flight.marketing_airline_code]}.png`} />
                             </IonThumbnail>
                           </IonCol>
