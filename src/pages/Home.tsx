@@ -96,7 +96,7 @@ const flightStatuses: {
   "408": { longStatusText: "Unknown", statusText: "Unknown", color: "primary" },
 };
 
-const IATAToICAO =  {
+const IATAToICAO: {[key: string]: string} =  {
   "PR": "BOI",
   "2T": "TBS",
   "Q5": "MLA",
@@ -1481,8 +1481,8 @@ const Home: React.FC = () => {
                         <IonRow>
                           <IonCol>
                             <h5 className="ion-no-margin">
-                              <IonThumbnail>
-                                <img src="%PUBLIC_URL%/assets/airline-logos/AAL.png" />
+                              <IonThumbnail style={{ "--size": "43px" }} slot="start">
+                                <img src={`assets/airline-logos/${IATAToICAO[flight.marketing_airline_code]}.png`} />
                               </IonThumbnail>
                               {flight.marketing_airline}{" "}
                               {flight.marketing_flight_number}
