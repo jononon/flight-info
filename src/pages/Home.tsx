@@ -1481,9 +1481,6 @@ const Home: React.FC = () => {
                         <IonRow>
                           <IonCol>
                             <h5 className="ion-no-margin">
-                              <IonThumbnail style={{ "--size": "43px" }} slot="start">
-                                <img src={`assets/airline-logos/${IATAToICAO[flight.marketing_airline_code]}.png`} />
-                              </IonThumbnail>
                               {flight.marketing_airline}{" "}
                               {flight.marketing_flight_number}
                             </h5>
@@ -1498,6 +1495,11 @@ const Home: React.FC = () => {
                                 <IonIcon icon={clipboardOutline}></IonIcon>
                               </a>
                             </p>
+                          </IonCol>
+                          <IonCol>
+                            <IonThumbnail slot="end">
+                              <img src={`assets/airline-logos/${IATAToICAO[flight.marketing_airline_code]}.png`} />
+                            </IonThumbnail>
                           </IonCol>
                         </IonRow>
                         <br />
