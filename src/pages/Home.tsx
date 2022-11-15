@@ -1495,18 +1495,7 @@ const Home: React.FC = () => {
                                 <IonIcon icon={clipboardOutline}></IonIcon>
                               </a>
                             </p>
-                          </IonCol>
-                          <IonCol>
-                            <IonItem lines="none">
-                              <IonThumbnail slot="end">
-                                <img src={`assets/airline-logos/${IATAToICAO[flight.marketing_airline_code]}.png`} />
-                              </IonThumbnail>
-                            </IonItem>
-                          </IonCol>
-                        </IonRow>
-                        <br />
-                        <IonRow>
-                          <IonCol>
+                            <br />
                             <IonText
                               color={
                                 flightStatuses[flight.Status.flight_status]
@@ -1531,6 +1520,13 @@ const Home: React.FC = () => {
                                 <></>
                               )}
                             </IonText>
+                          </IonCol>
+                          <IonCol>
+                            <IonItem lines="none">
+                              <IonThumbnail slot="end">
+                                <img src={`assets/airline-logos/${IATAToICAO[flight.marketing_airline_code]}.png`} />
+                              </IonThumbnail>
+                            </IonItem>
                           </IonCol>
                         </IonRow>
                         <br />
