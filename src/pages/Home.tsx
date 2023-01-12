@@ -1143,6 +1143,7 @@ const Home: React.FC = () => {
   useEffect(() => {
     flightMapsRef.current = flightMaps;
     flightAwareStatusesRef.current = flightAwareStatuses;
+    incomingFlightAwareStatusesRef.current = incomingFlightAwareStatuses;
   });
 
   const getFlightsFunction = async () => {
@@ -1747,7 +1748,21 @@ const Home: React.FC = () => {
                                 ].statuses.map((incomingFlight) => (
                                   <IonItem key={incomingFlight.ident}>
                                     <IonLabel class="ion-text-wrap">
-                                      <h2>{incomingFlight.ident}</h2>
+                                      <h2>
+                                        {incomingFlight.ident}{" "}
+                                        <a
+                                          role="button"
+                                          onClick={() => {
+                                            navigator.clipboard.writeText(
+                                              incomingFlight.ident
+                                            );
+                                          }}
+                                        >
+                                          <IonIcon
+                                            icon={clipboardOutline}
+                                          ></IonIcon>
+                                        </a>
+                                      </h2>
                                       <p>
                                         {incomingFlight.origin.code_iata}
                                         {" - "}
