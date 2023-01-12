@@ -28,11 +28,16 @@ const handler = async (event) => {
     console.log(`EVENT: ${JSON.stringify(event)}`);
 
     const ident = event.pathParameters.ident;
-    const start = event.queryStringParameters.start;
-    const end = event.queryStringParameters.end;
+
+    let start, end;
+
+    if(event.queryStringParameters !== null) {
+      start = event.queryStringParameters.start;
+      end = event.queryStringParameters.end;
+    }
 
     const flights = 
-      start === undefined && end === undefined ? 
+      event.queryStringParameters === null ? 
       await flightAwareClient.get(`flights/${ident}`).json() : 
       await flightAwareClient.get(`flights/${ident}?start=${start}&end=${end}`).json();
 
