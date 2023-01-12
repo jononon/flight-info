@@ -1769,7 +1769,7 @@ const Home: React.FC = () => {
                                         {incomingFlight.destination.code_iata}
                                       </p>
                                       <p>
-                                        {"Due in "}
+                                        {"Due "}
                                         {new Date(
                                           incomingFlight.estimated_in
                                         ).toLocaleString(
