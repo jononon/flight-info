@@ -1749,9 +1749,9 @@ const Home: React.FC = () => {
                                     <IonLabel class="ion-text-wrap">
                                       <h2>{incomingFlight.ident}</h2>
                                       <p>
-                                        {incomingFlight.origin.code}
+                                        {incomingFlight.origin.code_iata}
                                         {" - "}
-                                        {incomingFlight.destination.code}
+                                        {incomingFlight.destination.code_iata}
                                       </p>
                                       {incomingFlight.arrival_delay >= 300 && (
                                         <p>
