@@ -31,7 +31,10 @@ const handler = async (event) => {
     const start = event.queryStringParameters.start;
     const end = event.queryStringParameters.end;
 
-    const flights = await flightAwareClient.get(`flights/${ident}?start=${start}&end=${end}`).json()
+    const flights = 
+      start === undefined && end === undefined ? 
+      await flightAwareClient.get(`flights/${ident}`).json() : 
+      await flightAwareClient.get(`flights/${ident}?start=${start}&end=${end}`).json();
 
     console.log(flights);
 
