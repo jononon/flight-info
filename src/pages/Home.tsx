@@ -1775,7 +1775,7 @@ const Home: React.FC = () => {
                                     </IonBadge>
                                     <IonButton
                                       slot="end"
-                                      href={`https://flightaware.com/live/flight/${incomingFlight.fa_flight_id}`}
+                                      href={`https://flightaware.com/live/flight/id/${incomingFlight.fa_flight_id}`}
                                     >
                                       View on FA
                                     </IonButton>
