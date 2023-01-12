@@ -1768,6 +1768,15 @@ const Home: React.FC = () => {
                                         {" - "}
                                         {incomingFlight.destination.code_iata}
                                       </p>
+                                      <p>
+                                        {"Due in "}
+                                        {new Date(
+                                          incomingFlight.estimated_in
+                                        ).toLocaleString(
+                                          "en-US",
+                                          longDateTimeFormatOptions
+                                        )}
+                                      </p>
                                       {incomingFlight.arrival_delay >= 300 && (
                                         <p>
                                           <IonText color="danger">
@@ -1792,7 +1801,7 @@ const Home: React.FC = () => {
                                       slot="end"
                                       href={`https://flightaware.com/live/flight/id/${incomingFlight.fa_flight_id}`}
                                     >
-                                      View on FA
+                                      Track
                                     </IonButton>
                                   </IonItem>
                                 ))}
