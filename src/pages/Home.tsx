@@ -1221,7 +1221,8 @@ const Home: React.FC = () => {
           incomingFlightAwareStatusesRef.current[ident].fetchedDate.getTime() >
           300000)
     ) {
-      const incomingFlights = [];
+      const incomingFlights: Array<FlightAwareStatus> = [];
+
       while (inboundFaFlightId !== undefined && inboundFaFlightId !== null) {
         const incomingFlightFlightAwareStatus = (await API.get(
           "flightAwareAdapter",
