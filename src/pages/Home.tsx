@@ -1232,7 +1232,7 @@ const Home: React.FC = () => {
 
         incomingFlights.push(incomingFlightFlightAwareStatus);
 
-        if (incomingFlightFlightAwareStatus.progress_percent !== 0) {
+        if (incomingFlightFlightAwareStatus.progress_percent === 0) {
           inboundFaFlightId =
             incomingFlightFlightAwareStatus.inbound_fa_flight_id;
         } else {
