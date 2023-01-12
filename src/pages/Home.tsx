@@ -1138,7 +1138,7 @@ const Home: React.FC = () => {
     useState<{
       [key: string]: { statuses: Array<FlightAwareStatus>; fetchedDate: Date };
     }>({});
-  const incomingFlightAwareStatusesRef = useRef(flightAwareStatuses);
+  const incomingFlightAwareStatusesRef = useRef(incomingFlightAwareStatuses);
 
   useEffect(() => {
     flightMapsRef.current = flightMaps;
@@ -1746,7 +1746,7 @@ const Home: React.FC = () => {
                                   ident
                                 ].statuses.map((incomingFlight) => (
                                   <IonItem key={incomingFlight.ident}>
-                                    <IonLabel>
+                                    <IonLabel class="ion-text-wrap">
                                       <h2>{incomingFlight.ident}</h2>
                                       <p>
                                         {incomingFlight.origin.code}
