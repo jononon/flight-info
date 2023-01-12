@@ -1742,46 +1742,45 @@ const Home: React.FC = () => {
                             <IonCol>
                               <h3>Incoming Flights</h3>
                               <IonList>
-                                {incomingFlightAwareStatuses[ident].map(
-                                  (incomingFlight) => (
-                                    <IonItem key={incomingFlight.ident}>
-                                      <IonLabel>
-                                        <h2>{incomingFlight.ident}</h2>
+                                {incomingFlightAwareStatuses[
+                                  ident
+                                ].statuses.map((incomingFlight) => (
+                                  <IonItem key={incomingFlight.ident}>
+                                    <IonLabel>
+                                      <h2>{incomingFlight.ident}</h2>
+                                      <p>
+                                        {incomingFlight.origin.code}
+                                        {" - "}
+                                        {incomingFlight.destination.code}
+                                      </p>
+                                      {incomingFlight.arrival_delay >= 300 && (
                                         <p>
-                                          {incomingFlight.origin.code}
-                                          {" - "}
-                                          {incomingFlight.destination.code}
+                                          <IonText color="danger">
+                                            {"Delayed by "}
+                                            {durationString(
+                                              incomingFlight.arrival_delay *
+                                                1000
+                                            )}
+                                          </IonText>
                                         </p>
-                                        {incomingFlight.arrival_delay >=
-                                          300 && (
-                                          <p>
-                                            <IonText color="danger">
-                                              {"Delayed by "}
-                                              {durationString(
-                                                incomingFlight.arrival_delay *
-                                                  1000
-                                              )}
-                                            </IonText>
-                                          </p>
-                                        )}
-                                      </IonLabel>
-                                      <IonBadge
-                                        slot="end"
-                                        color={colorForFaFlightStatus(
-                                          incomingFlight
-                                        )}
-                                      >
-                                        {incomingFlight.status}
-                                      </IonBadge>
-                                      <IonButton
-                                        slot="end"
-                                        href={`https://flightaware.com/live/flight/${incomingFlight.fa_flight_id}`}
-                                      >
-                                        View on FA
-                                      </IonButton>
-                                    </IonItem>
-                                  )
-                                )}
+                                      )}
+                                    </IonLabel>
+                                    <IonBadge
+                                      slot="end"
+                                      color={colorForFaFlightStatus(
+                                        incomingFlight
+                                      )}
+                                    >
+                                      {incomingFlight.status}
+                                    </IonBadge>
+                                    <IonButton
+                                      slot="end"
+                                      href={`https://flightaware.com/live/flight/${incomingFlight.fa_flight_id}`}
+                                    >
+                                      View on FA
+                                    </IonButton>
+                                  </IonItem>
+                                ))}
                               </IonList>
                             </IonCol>
                           </IonRow>
