@@ -1584,9 +1584,10 @@ const Home: React.FC = () => {
                             <IonItem lines="none">
                               <IonThumbnail slot="end">
                                 <img
-                                  src={`assets/airline-logos/${
+                                  src={`assets/airline-logsos/${
                                     IATAToICAO[flight.marketing_airline_code]
                                   }.png`}
+                                  onError={(event) => event.target.src = ''}
                                 />
                               </IonThumbnail>
                             </IonItem>
