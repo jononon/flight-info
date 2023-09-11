@@ -1587,7 +1587,6 @@ const Home: React.FC = () => {
                                   src={`assets/airline-logsos/${
                                     IATAToICAO[flight.marketing_airline_code]
                                   }.png`}
-                                  onError={(event) => event.target.removeAttribute('src')}
                                 />
                               </IonThumbnail>
                             </IonItem>
