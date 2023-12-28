@@ -1771,7 +1771,9 @@ const Home: React.FC = () => {
                                       <p>
                                         {"Dep "}
                                         {new Date(
-                                          incomingFlight.estimated_out
+                                          incomingFlight.actual_out ??
+                                            incomingFlight.estimated_out ??
+                                            incomingFlight.scheduled_out
                                         ).toLocaleString("en-US", {
                                           ...longDateTimeFormatOptions,
                                           timeZone:
@@ -1779,7 +1781,9 @@ const Home: React.FC = () => {
                                         })}
                                         {", Arr "}
                                         {new Date(
-                                          incomingFlight.estimated_in
+                                          incomingFlight.actual_in ??
+                                            incomingFlight.estimated_in ??
+                                            incomingFlight.scheduled_in
                                         ).toLocaleString("en-US", {
                                           ...longDateTimeFormatOptions,
                                           timeZone:
@@ -1809,6 +1813,7 @@ const Home: React.FC = () => {
                                     <IonButton
                                       slot="end"
                                       href={`https://flightaware.com/live/flight/id/${incomingFlight.fa_flight_id}`}
+                                      target="_blank"
                                     >
                                       Track
                                     </IonButton>
@@ -1932,6 +1937,7 @@ const Home: React.FC = () => {
                                     <IonButton
                                       shape="round"
                                       href={`https://flightaware.com/live/flight/id/${flightAwareStatuses[ident].status.fa_flight_id}`}
+                                      target="_blank"
                                     >
                                       Track on FlightAware
                                     </IonButton>
@@ -1941,8 +1947,19 @@ const Home: React.FC = () => {
                                     <IonButton
                                       shape="round"
                                       href={`https://flightaware.com/live/flight/id/${flightAwareStatuses[ident].status.inbound_fa_flight_id}`}
+                                      target="_blank"
                                     >
                                       Track Inbound Flight on FlightAware
+                                    </IonButton>
+                                  )}
+                                  {flightAwareStatuses[ident].status
+                                    .registration && (
+                                    <IonButton
+                                      shape="round"
+                                      href={`https://www.flightradar24.com/${flightAwareStatuses[ident].status.registration}`}
+                                      target="_blank"
+                                    >
+                                      Track Aircraft on FlightRadar24
                                     </IonButton>
                                   )}
                                 </>
