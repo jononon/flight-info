@@ -1515,8 +1515,7 @@ const Home: React.FC = () => {
                   <IonLabel>
                     {scheduledDepartureDate.toLocaleDateString("en-US", {
                       ...shortDateFormatOptions,
-                      timeZone:
-                        flight.Status.ScheduledDepartureDateTime?.timezone,
+                      timeZone: scheduledDepartureDateObject.timezone,
                     })}{" "}
                     | {flight.start_airport_code} - {flight.end_airport_code}
                   </IonLabel>
