@@ -1513,10 +1513,11 @@ const Home: React.FC = () => {
               <IonAccordion value={`${index}`} key={index}>
                 <IonItem slot="header" color="light">
                   <IonLabel>
-                    {scheduledDepartureDate.toLocaleDateString(
-                      "en-US",
-                      shortDateFormatOptions
-                    )}{" "}
+                    {scheduledDepartureDate.toLocaleDateString("en-US", {
+                      ...shortDateFormatOptions,
+                      timeZone:
+                        flight.Status.ScheduledDepartureDateTime?.timezone,
+                    })}{" "}
                     | {flight.start_airport_code} - {flight.end_airport_code}
                   </IonLabel>
                   <IonBadge
@@ -1769,13 +1770,22 @@ const Home: React.FC = () => {
                                         {incomingFlight.destination.code_iata}
                                       </p>
                                       <p>
-                                        {"Arr "}
+                                        {"Dep "}
+                                        {new Date(
+                                          incomingFlight.estimated_out
+                                        ).toLocaleString("en-US", {
+                                          ...longDateTimeFormatOptions,
+                                          timeZone:
+                                            incomingFlight.origin.timezone,
+                                        })}
+                                        {", Arr "}
                                         {new Date(
                                           incomingFlight.estimated_in
-                                        ).toLocaleString(
-                                          "en-US",
-                                          longDateTimeFormatOptions
-                                        )}
+                                        ).toLocaleString("en-US", {
+                                          ...longDateTimeFormatOptions,
+                                          timeZone:
+                                            incomingFlight.destination.timezone,
+                                        })}
                                       </p>
                                       {incomingFlight.arrival_delay >= 300 && (
                                         <p>

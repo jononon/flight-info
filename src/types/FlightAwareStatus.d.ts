@@ -57,4 +57,6 @@ export interface OriginOrDestination {
   code_iata: string;
   code_lid: string;
   airport_info_url: string;
+  timezone: string;
+  name: string;
 }
