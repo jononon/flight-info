@@ -43,7 +43,7 @@ const handler = async (event) => {
 
     const segments = [];
     
-    for (const flight of airObjects]) {
+    for (const flight of airObjects) {
       if (Array.isArray(flight["Segment"])) {
         for(const segment of flight["Segment"]) {
           segments.push(segment)
