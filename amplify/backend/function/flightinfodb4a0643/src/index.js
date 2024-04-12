@@ -31,16 +31,28 @@ const handler = async (event) => {
 
     console.log(data);
 
-    const segments = [];
+    const airObjects = [];
 
-    for (const flight of data["AirObject"]) {
-      if (!Array.isArray(flight["Segment"])) {
-        segments.push(flight["Segment"])
-      } else {
-        for(const segment of flight["Segment"])
+    if (Array.isArray(flight["AirObject"])) {
+      for(const airObject of flight["AirObject"]) {
+        airObjects.push(airObject)
+      }
+    } else {
+      airObjects.push(flight["AirObject"])
+    }
+
+    const segments = [];
+    
+    for (const flight of airObjects]) {
+      if (Array.isArray(flight["Segment"])) {
+        for(const segment of flight["Segment"]) {
           segments.push(segment)
+        }
+      } else {
+        segments.push(flight["Segment"])
       }
     }
+
     console.log(segments);
     
     segments.sort((a, b) => {
