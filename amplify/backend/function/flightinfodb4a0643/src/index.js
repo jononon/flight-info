@@ -21,25 +21,39 @@ const tripItClient = got.extend({
   password: secrets[process.env.tripit_password]
 })
 
+function tripItDateObjectToDate (tripItDateObject) {
+  return new Date(tripItDateObject["date"] + "T" + tripItDateObject["time"]+tripItDateObject["utc_offset"])
+}
+
+function extractAirObjects(tripItData) {
+  const airObjects = [];
+
+  if (Array.isArray(tripItData["AirObject"])) {
+    for(const airObject of tripItData["AirObject"]) {
+      airObjects.push(airObject)
+    }
+  } else {
+    airObjects.push(tripItData["AirObject"])
+  }
+
+  return airObjects;
+}
+
 /**
  * @type {import('@types/aws-lambda').APIGatewayProxyHandler}
  */
 const handler = async (event) => {
     console.log(`EVENT: ${JSON.stringify(event)}`);
 
-    const data = await tripItClient.get('list/object/type/air?format=json').json();
+    const [data, pastData] = await Promise.all([
+      tripItClient.get('list/object/type/air?format=json').json(),
+      tripItClient.get('list/object/type/air/past/true?format=json').json()
+    ]);
 
     console.log(data);
+    console.log(pastData)
 
-    const airObjects = [];
-
-    if (Array.isArray(data["AirObject"])) {
-      for(const airObject of data["AirObject"]) {
-        airObjects.push(airObject)
-      }
-    } else {
-      airObjects.push(data["AirObject"])
-    }
+    const airObjects = extractAirObjects(data).concat(extractAirObjects(pastData));
 
     const segments = [];
     
@@ -56,19 +70,32 @@ const handler = async (event) => {
     console.log(segments);
     
     segments.sort((a, b) => {
-      const timeStringA = a["StartDateTime"]["date"] + "T" + a["StartDateTime"]["time"]+a["StartDateTime"]["utc_offset"];
-      const timeStringB = b["StartDateTime"]["date"] + "T" + b["StartDateTime"]["time"]+b["StartDateTime"]["utc_offset"];
-      
-      const timeA = new Date(timeStringA);
-      const timeB = new Date(timeStringB);
+      const timeA = tripItDateObjectToDate(a["StartDateTime"]);
+      const timeB = tripItDateObjectToDate(b["StartDateTime"]);
       
       return timeA - timeB;
     });
     
     console.log(segments);
-    // switch(event.httpMethod) {
 
-    // }
+    const filteredSegments = segments.filter((segment) => {
+      let arrivalTime;
+
+      if (segment["Status"]["EstimatedArrivalDateTime"] != undefined) {
+        arrivalTime = tripItDateObjectToDate(segment["Status"]["EstimatedArrivalDateTime"])
+      } else if (segment["Status"]["ScheduledArrivalDateTime"] != undefined) {
+        arrivalTime = tripItDateObjectToDate(segment["Status"]["ScheduledArrivalDateTime"])
+      } else {
+        arrivalTime = tripItDateObjectToDate(segment["EndDateTime"])
+      }
+
+      const cutoff = new Date();
+      cutoff.setHours(cutoff.getHours() - 6);
+
+      return arrivalTime >= cutoff;
+    })
+
+    console.log(filteredSegments);
 
     return {
       statusCode: 200,
@@ -76,7 +103,7 @@ const handler = async (event) => {
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Headers": "*"
       }, 
-      body: JSON.stringify(segments),
+      body: JSON.stringify(filteredSegments),
     };
 };
 

@@ -1,57 +1,131 @@
 {
-  "function": {
-    "flightinfodb4a0643": {
-      "build": true,
+  "api": {
+    "flightAwareAdapter": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "flightAwareFlightDetails"
+        },
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "flightAwareMap"
+        }
+      ],
       "providerPlugin": "awscloudformation",
-      "service": "Lambda",
-      "dependsOn": []
+      "service": "API Gateway"
     },
+    "tripItFlightsAdapter": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "flightinfodb4a0643"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "API Gateway"
+    }
+  },
+  "function": {
     "flightAwareFlightDetails": {
       "build": true,
+      "dependsOn": [],
       "providerPlugin": "awscloudformation",
-      "service": "Lambda",
-      "dependsOn": []
+      "service": "Lambda"
     },
     "flightAwareMap": {
       "build": true,
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
+    },
+    "flightinfodb4a0643": {
+      "build": true,
+      "dependsOn": [],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
     }
   },
-  "api": {
-    "tripItFlightsAdapter": {
-      "service": "API Gateway",
-      "providerPlugin": "awscloudformation",
-      "dependsOn": [
+  "parameters": {
+    "AMPLIFY_function_flightAwareFlightDetails_deploymentBucketName": {
+      "usedBy": [
         {
           "category": "function",
-          "resourceName": "flightinfodb4a0643",
-          "attributes": [
-            "Name",
-            "Arn"
-          ]
+          "resourceName": "flightAwareFlightDetails"
         }
       ]
     },
-    "flightAwareAdapter": {
-      "service": "API Gateway",
-      "providerPlugin": "awscloudformation",
-      "dependsOn": [
+    "AMPLIFY_function_flightAwareFlightDetails_s3Key": {
+      "usedBy": [
         {
           "category": "function",
-          "resourceName": "flightAwareFlightDetails",
-          "attributes": [
-            "Name",
-            "Arn"
-          ]
-        },
+          "resourceName": "flightAwareFlightDetails"
+        }
+      ]
+    },
+    "AMPLIFY_function_flightAwareFlightDetails_secretsPathAmplifyAppId": {
+      "usedBy": [
         {
           "category": "function",
-          "resourceName": "flightAwareMap",
-          "attributes": [
-            "Name",
-            "Arn"
-          ]
+          "resourceName": "flightAwareFlightDetails"
+        }
+      ]
+    },
+    "AMPLIFY_function_flightAwareMap_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "flightAwareMap"
+        }
+      ]
+    },
+    "AMPLIFY_function_flightAwareMap_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "flightAwareMap"
+        }
+      ]
+    },
+    "AMPLIFY_function_flightAwareMap_secretsPathAmplifyAppId": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "flightAwareMap"
+        }
+      ]
+    },
+    "AMPLIFY_function_flightinfodb4a0643_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "flightinfodb4a0643"
+        }
+      ]
+    },
+    "AMPLIFY_function_flightinfodb4a0643_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "flightinfodb4a0643"
+        }
+      ]
+    },
+    "AMPLIFY_function_flightinfodb4a0643_secretsPathAmplifyAppId": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "flightinfodb4a0643"
         }
       ]
     }

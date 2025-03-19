@@ -16,18 +16,22 @@
         "flightinfodb4a0643": {
           "secretsPathAmplifyAppId": "d39o3gpxqsp5wq",
           "deploymentBucketName": "amplify-flightinfo-dev-115417-deployment",
-          "s3Key": "amplify-builds/flightinfodb4a0643-596f532f393444656877-build.zip"
+          "s3Key": "amplify-builds/flightinfodb4a0643-6b746f31784d522f4363-build.zip"
         },
         "flightAwareFlightDetails": {
           "secretsPathAmplifyAppId": "d39o3gpxqsp5wq",
           "deploymentBucketName": "amplify-flightinfo-dev-115417-deployment",
-          "s3Key": "amplify-builds/flightAwareFlightDetails-62716350742b62503746-build.zip"
+          "s3Key": "amplify-builds/flightAwareFlightDetails-53466157436750715636-build.zip"
         },
         "flightAwareMap": {
           "deploymentBucketName": "amplify-flightinfo-dev-115417-deployment",
           "s3Key": "amplify-builds/flightAwareMap-7865735a737934523176-build.zip",
           "secretsPathAmplifyAppId": "d39o3gpxqsp5wq"
         }
+      },
+      "api": {
+        "tripItFlightsAdapter": {},
+        "flightAwareAdapter": {}
       }
     }
   }
