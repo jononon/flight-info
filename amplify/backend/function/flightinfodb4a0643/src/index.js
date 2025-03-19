@@ -21,13 +21,17 @@ const tripItClient = got.extend({
   password: secrets[process.env.tripit_password]
 })
 
+function tripItDateObjectToDate (tripItDateObject) {
+  return new Date(tripItDateObject["date"] + "T" + tripItDateObject["time"]+tripItDateObject["utc_offset"])
+}
+
 /**
  * @type {import('@types/aws-lambda').APIGatewayProxyHandler}
  */
 const handler = async (event) => {
     console.log(`EVENT: ${JSON.stringify(event)}`);
 
-    const data = await tripItClient.get('list/object/type/air?format=json').json();
+    const data = await tripItClient.get('list/object/type/air/past/true?format=json').json();
 
     console.log(data);
 
@@ -56,19 +60,32 @@ const handler = async (event) => {
     console.log(segments);
     
     segments.sort((a, b) => {
-      const timeStringA = a["StartDateTime"]["date"] + "T" + a["StartDateTime"]["time"]+a["StartDateTime"]["utc_offset"];
-      const timeStringB = b["StartDateTime"]["date"] + "T" + b["StartDateTime"]["time"]+b["StartDateTime"]["utc_offset"];
-      
-      const timeA = new Date(timeStringA);
-      const timeB = new Date(timeStringB);
+      const timeA = tripItDateObjectToDate(a["StartDateTime"]);
+      const timeB = tripItDateObjectToDate(b["StartDateTime"]);
       
       return timeA - timeB;
     });
     
     console.log(segments);
-    // switch(event.httpMethod) {
 
-    // }
+    segments.filter((segment) => {
+      let arrivalTime;
+
+      if (segment["Status"]["EstimatedArrivalDateTime"] != undefined) {
+        arrivalTime = tripItDateObjectToDate(segment["Status"]["EstimatedArrivalDateTime"])
+      } else if (segment["Status"]["ScheduledArrivalDateTime"] != undefined) {
+        arrivalTime = tripItDateObjectToDate(segment["Status"]["ScheduledArrivalDateTime"])
+      } else {
+        arrivalTime = tripItDateObjectToDate(segment["EndDateTime"])
+      }
+
+      const cutoff = new Date();
+      cutoff.setHours(cutoff.getHours() - 6);
+
+      return arrivalTime >= cutoff;
+    })
+
+    console.log(segments);
 
     return {
       statusCode: 200,
