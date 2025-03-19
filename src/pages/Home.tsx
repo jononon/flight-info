@@ -1279,10 +1279,6 @@ const Home: React.FC = () => {
           scheduledArrivalDateObject.utc_offset
       );
 
-      const scheduledDateDifference = 
-        new Date(scheduledArrivalDateObject.date) - 
-        new Date(scheduledDepartureDateObject.date);
-
       const actualDepartureDateObject =
         flight.Status.EstimatedDepartureDateTime;
       const actualArrivalDateObject = flight.Status.EstimatedArrivalDateTime;
@@ -1306,10 +1302,6 @@ const Home: React.FC = () => {
                 actualArrivalDateObject.time +
                 actualArrivalDateObject.utc_offset
             );
-
-      const actualDateDifference = 
-        new Date(actualArrivalDateObject.date) - 
-        new Date(actualDepartureDateObject.date);
 
       const millisecondsUntilDeparture =
         actualDepartureDate === undefined
@@ -1418,6 +1410,16 @@ const Home: React.FC = () => {
                 scheduledArrivalDateObject.utc_offset
             );
 
+            const scheduledDateDifference =
+              scheduledArrivalDateObject === undefined ||
+              scheduledDepartureDateObject === undefined
+                ? undefined
+                : Math.abs(
+                    (new Date(scheduledArrivalDateObject.date).getTime() -
+                      new Date(scheduledDepartureDateObject.date).getTime()) /
+                      (1000 * 60 * 60 * 24)
+                  );
+
             const actualDepartureDateObject =
               flight.Status.EstimatedDepartureDateTime;
             const actualArrivalDateObject =
@@ -1441,6 +1443,16 @@ const Home: React.FC = () => {
                       "T" +
                       actualArrivalDateObject.time +
                       actualArrivalDateObject.utc_offset
+                  );
+
+            const actualDateDifference =
+              actualArrivalDateObject === undefined ||
+              actualDepartureDateObject === undefined
+                ? undefined
+                : Math.abs(
+                    (new Date(actualArrivalDateObject.date).getTime() -
+                      new Date(actualDepartureDateObject.date).getTime()) /
+                      (1000 * 60 * 60 * 24)
                   );
 
             const departureDelay =
@@ -1702,14 +1714,12 @@ const Home: React.FC = () => {
                                   timeZone: scheduledArrivalDateObject.timezone,
                                 }
                               )}
-                              {
-                                scheduledDateDifference != 0 && (
+                              {scheduledDateDifference !== undefined &&
+                                scheduledDateDifference !== 0 && (
                                   <IonText color="danger">
-                                    +{
-                                    scheduledDateDifference}
+                                    +{scheduledDateDifference}
                                   </IonText>
-                                )
-                              }
+                                )}
                             </p>
                             {actualArrivalDate && (
                               <>
@@ -1734,13 +1744,12 @@ const Home: React.FC = () => {
                                       }
                                     )}
                                   </IonText>
-                                  {
-                                    actualDateDifference != 0 && (
+                                  {actualDateDifference !== undefined &&
+                                    actualDateDifference !== 0 && (
                                       <IonText color="danger">
                                         +{actualDateDifference}
                                       </IonText>
-                                    )
-                                  }
+                                    )}
                                 </p>
                               </>
                             )}
