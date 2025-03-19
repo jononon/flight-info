@@ -1279,6 +1279,10 @@ const Home: React.FC = () => {
           scheduledArrivalDateObject.utc_offset
       );
 
+      const scheduledDateDifference = 
+        new Date(scheduledArrivalDateObject.date) - 
+        new Date(scheduledDepartureDateObject.date);
+
       const actualDepartureDateObject =
         flight.Status.EstimatedDepartureDateTime;
       const actualArrivalDateObject = flight.Status.EstimatedArrivalDateTime;
@@ -1302,6 +1306,10 @@ const Home: React.FC = () => {
                 actualArrivalDateObject.time +
                 actualArrivalDateObject.utc_offset
             );
+
+      const actualDateDifference = 
+        new Date(actualArrivalDateObject.date) - 
+        new Date(actualDepartureDateObject.date);
 
       const millisecondsUntilDeparture =
         actualDepartureDate === undefined
@@ -1626,6 +1634,14 @@ const Home: React.FC = () => {
                                     scheduledDepartureDateObject.timezone,
                                 }
                               )}
+                              {
+                                scheduledDateDifference != 0 && (
+                                  <IonText color="danger">
+                                    +{
+                                    scheduledDateDifference}
+                                  </IonText>
+                                )
+                              }
                             </p>
                             {actualDepartureDate && (
                               <>
@@ -1650,6 +1666,13 @@ const Home: React.FC = () => {
                                       }
                                     )}
                                   </IonText>
+                                  {
+                                    actualDateDifference != 0 && (
+                                      <IonText color="danger">
+                                        +{actualDateDifference}
+                                      </IonText>
+                                    )
+                                  }
                                 </p>
                               </>
                             )}

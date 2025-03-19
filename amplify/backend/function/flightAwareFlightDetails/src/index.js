@@ -36,21 +36,33 @@ const handler = async (event) => {
       end = event.queryStringParameters.end;
     }
 
-    const flights = 
+    try {
+      
+      const flights = 
       event.queryStringParameters === null ? 
       await flightAwareClient.get(`flights/${ident}`).json() : 
       await flightAwareClient.get(`flights/${ident}?start=${start}&end=${end}`).json();
-
-    console.log(flights);
-
-    return {
-      statusCode: 200,
-      headers: {
+      
+      console.log(flights);
+      
+      return {
+        statusCode: 200,
+        headers: {
           "Access-Control-Allow-Origin": "*",
           "Access-Control-Allow-Headers": "*"
-      }, 
-      body: JSON.stringify(flights.flights[0]),
-    };
+        }, 
+        body: JSON.stringify(flights.flights[0]),
+      };
+    } catch (error) {
+      if (error.response) {
+        console.error(`Server responded with ${error.response.statusCode}:`, error.response.body);
+      } else {
+        console.error('Request failed:', error.message);
+      }
+
+      throw new Error("");
+      
+    }
 };
 
 export {handler};
