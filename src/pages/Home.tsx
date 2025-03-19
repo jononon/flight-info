@@ -1634,14 +1634,6 @@ const Home: React.FC = () => {
                                     scheduledDepartureDateObject.timezone,
                                 }
                               )}
-                              {
-                                scheduledDateDifference != 0 && (
-                                  <IonText color="danger">
-                                    +{
-                                    scheduledDateDifference}
-                                  </IonText>
-                                )
-                              }
                             </p>
                             {actualDepartureDate && (
                               <>
@@ -1666,13 +1658,6 @@ const Home: React.FC = () => {
                                       }
                                     )}
                                   </IonText>
-                                  {
-                                    actualDateDifference != 0 && (
-                                      <IonText color="danger">
-                                        +{actualDateDifference}
-                                      </IonText>
-                                    )
-                                  }
                                 </p>
                               </>
                             )}
@@ -1717,6 +1702,14 @@ const Home: React.FC = () => {
                                   timeZone: scheduledArrivalDateObject.timezone,
                                 }
                               )}
+                              {
+                                scheduledDateDifference != 0 && (
+                                  <IonText color="danger">
+                                    +{
+                                    scheduledDateDifference}
+                                  </IonText>
+                                )
+                              }
                             </p>
                             {actualArrivalDate && (
                               <>
@@ -1741,6 +1734,13 @@ const Home: React.FC = () => {
                                       }
                                     )}
                                   </IonText>
+                                  {
+                                    actualDateDifference != 0 && (
+                                      <IonText color="danger">
+                                        +{actualDateDifference}
+                                      </IonText>
+                                    )
+                                  }
                                 </p>
                               </>
                             )}
