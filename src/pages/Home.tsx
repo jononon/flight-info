@@ -1717,7 +1717,10 @@ const Home: React.FC = () => {
                               {scheduledDateDifference !== undefined &&
                                 scheduledDateDifference !== 0 && (
                                   <IonText color="danger">
-                                    +{scheduledDateDifference}
+                                    <small>
+                                      {" +"}
+                                      {scheduledDateDifference}
+                                    </small>
                                   </IonText>
                                 )}
                             </p>
@@ -1747,7 +1750,10 @@ const Home: React.FC = () => {
                                   {actualDateDifference !== undefined &&
                                     actualDateDifference !== 0 && (
                                       <IonText color="danger">
-                                        +{actualDateDifference}
+                                        <small>
+                                          {" +"}
+                                          {actualDateDifference}
+                                        </small>
                                       </IonText>
                                     )}
                                 </p>
