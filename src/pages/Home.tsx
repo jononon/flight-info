@@ -1529,6 +1529,11 @@ const Home: React.FC = () => {
               month: "short",
               day: "numeric",
             };
+
+            const dateDifferenceFormatter = Intl.NumberFormat("en-US", {
+              signDisplay: "always",
+            });
+
             return (
               <IonAccordion value={`${index}`} key={index}>
                 <IonItem slot="header" color="light">
@@ -1718,8 +1723,10 @@ const Home: React.FC = () => {
                                 scheduledDateDifference !== 0 && (
                                   <IonText color="danger">
                                     <small>
-                                      {" +"}
-                                      {scheduledDateDifference}
+                                      {" "}
+                                      {dateDifferenceFormatter.format(
+                                        scheduledDateDifference
+                                      )}
                                     </small>
                                   </IonText>
                                 )}
@@ -1751,8 +1758,10 @@ const Home: React.FC = () => {
                                     actualDateDifference !== 0 && (
                                       <IonText color="danger">
                                         <small>
-                                          {" +"}
-                                          {actualDateDifference}
+                                          {" "}
+                                          {dateDifferenceFormatter.format(
+                                            actualDateDifference
+                                          )}
                                         </small>
                                       </IonText>
                                     )}
