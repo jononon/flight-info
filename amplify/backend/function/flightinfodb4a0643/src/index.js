@@ -24,7 +24,7 @@ const tripItClient = got.extend({
 function removeDuplicateSegments (segments) {
   const segmentMap = {};
 
-  for(segment of segmentMap) {
+  for(segment of segments) {
     segmentMap[JSON.stringify(segment)] = segment
   }
 
