@@ -21,6 +21,16 @@ const tripItClient = got.extend({
   password: secrets[process.env.tripit_password]
 })
 
+function removeDuplicateSegments (segments) {
+  const segmentMap = {};
+
+  for(segment of segmentMap) {
+    segmentMap[JSON.stringify(segment)] = segment
+  }
+
+  return segmentMap.values()
+}
+
 function tripItDateObjectToDate (tripItDateObject) {
   return new Date(tripItDateObject["date"] + "T" + tripItDateObject["time"]+tripItDateObject["utc_offset"])
 }
@@ -55,7 +65,7 @@ const handler = async (event) => {
 
     const airObjects = extractAirObjects(data).concat(extractAirObjects(pastData));
 
-    const segments = [];
+    let segments = []
     
     for (const airObject of airObjects) {
       if (Array.isArray(airObject["Segment"])) {
@@ -66,6 +76,8 @@ const handler = async (event) => {
         segments.push(airObject["Segment"])
       }
     }
+
+    segments = removeDuplicateSegments(segments)
 
     console.log(segments);
     
@@ -94,6 +106,8 @@ const handler = async (event) => {
 
       return arrivalTime >= cutoff;
     })
+
+
 
     console.log(filteredSegments);
 
