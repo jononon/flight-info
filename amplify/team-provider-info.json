@@ -16,7 +16,7 @@
         "flightinfodb4a0643": {
           "secretsPathAmplifyAppId": "d39o3gpxqsp5wq",
           "deploymentBucketName": "amplify-flightinfo-dev-115417-deployment",
-          "s3Key": "amplify-builds/flightinfodb4a0643-6b746f31784d522f4363-build.zip"
+          "s3Key": "amplify-builds/flightinfodb4a0643-326b6945343533764357-build.zip"
         },
         "flightAwareFlightDetails": {
           "secretsPathAmplifyAppId": "d39o3gpxqsp5wq",

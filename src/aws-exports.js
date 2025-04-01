@@ -5,13 +5,13 @@ const awsmobile = {
     "aws_project_region": "us-east-1",
     "aws_cloud_logic_custom": [
         {
-            "name": "tripItFlightsAdapter",
-            "endpoint": "https://2fd2lzqzzi.execute-api.us-east-1.amazonaws.com/dev",
+            "name": "flightAwareAdapter",
+            "endpoint": "https://nvnzphrpn2.execute-api.us-east-1.amazonaws.com/dev",
             "region": "us-east-1"
         },
         {
-            "name": "flightAwareAdapter",
-            "endpoint": "https://nvnzphrpn2.execute-api.us-east-1.amazonaws.com/dev",
+            "name": "tripItFlightsAdapter",
+            "endpoint": "https://2fd2lzqzzi.execute-api.us-east-1.amazonaws.com/dev",
             "region": "us-east-1"
         }
     ]
