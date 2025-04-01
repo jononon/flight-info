@@ -28,7 +28,7 @@ function removeDuplicateSegments (segments) {
     segmentMap[JSON.stringify(segment)] = segment
   }
 
-  return segmentMap.values()
+  return Object.values(segmentMap);
 }
 
 function tripItDateObjectToDate (tripItDateObject) {
@@ -65,7 +65,7 @@ const handler = async (event) => {
 
     const airObjects = extractAirObjects(data).concat(extractAirObjects(pastData));
 
-    let segments = []
+    const segments = []
     
     for (const airObject of airObjects) {
       if (Array.isArray(airObject["Segment"])) {
@@ -77,20 +77,20 @@ const handler = async (event) => {
       }
     }
 
-    segments = removeDuplicateSegments(segments)
+    const deduplicatedSegments = removeDuplicateSegments(segments)
 
-    console.log(segments);
+    console.log(deduplicatedSegments);
     
-    segments.sort((a, b) => {
+    deduplicatedSegments.sort((a, b) => {
       const timeA = tripItDateObjectToDate(a["StartDateTime"]);
       const timeB = tripItDateObjectToDate(b["StartDateTime"]);
       
       return timeA - timeB;
     });
     
-    console.log(segments);
+    console.log(deduplicatedSegments);
 
-    const filteredSegments = segments.filter((segment) => {
+    const filteredSegments = deduplicatedSegments.filter((segment) => {
       let arrivalTime;
 
       if (segment["Status"]["EstimatedArrivalDateTime"] != undefined) {
