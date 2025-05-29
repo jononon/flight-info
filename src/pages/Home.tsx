@@ -3,6 +3,7 @@ import {
   IonAccordionGroup,
   IonBadge,
   IonButton,
+  IonCard,
   IonCol,
   IonContent,
   IonGrid,
@@ -2035,6 +2036,14 @@ const Home: React.FC = () => {
           })}
         </IonAccordionGroup>
         <ExploreContainer />
+        <Ioncard>
+          <a href="https://my.flightradar24.com/jonathandamico" target="_blank" rel="noopener noreferrer">
+            <IonImg 
+              src="https://banners-my.flightradar24.com/jonathandamico.png" 
+              alt="My Flightdiary.net profile"
+            ></IonImg>
+          </a>
+        </IonCard>
       </IonContent>
     </IonPage>
   );
