@@ -85,6 +85,7 @@ const Home: React.FC = () => {
   const [displayFlights, setDisplayFlights] = useState<Array<DisplayFlight>>(
     [],
   );
+  const displayFlightsRef = useRef(displayFlights);
   const [flightMaps, setFlightMaps] = useState<{
     [key: string]: { map: string; fetchedDate: Date };
   }>({});
@@ -102,6 +103,7 @@ const Home: React.FC = () => {
   const incomingFlightAwareStatusesRef = useRef(incomingFlightAwareStatuses);
 
   useEffect(() => {
+    displayFlightsRef.current = displayFlights;
     flightMapsRef.current = flightMaps;
     flightAwareStatusesRef.current = flightAwareStatuses;
     incomingFlightAwareStatusesRef.current = incomingFlightAwareStatuses;
@@ -117,8 +119,6 @@ const Home: React.FC = () => {
     // Map all TripIt flights to DisplayFlight
     const mapped = newFlights.map(mapTripItToDisplayFlight);
     setDisplayFlights(mapped);
-
-    await updateFlightAwareStatuses(mapped);
     return mapped;
   };
 
@@ -252,10 +252,11 @@ const Home: React.FC = () => {
 
   const setupDataRequests = async () => {
     const mapped = await getFlightsFunction();
+    await updateFlightAwareStatuses(mapped);
 
     let flightIndexToShow = 0;
 
-    for (const df of mapped) {
+    for (const df of displayFlightsRef.current) {
       const statusLower = df.statusText.toLowerCase();
       if (
         statusLower.includes("arrived") ||
@@ -274,8 +275,8 @@ const Home: React.FC = () => {
     accordionGroup.current.value = [`${flightIndexToShow}`];
 
     setInterval(() => {
-      getFlightsFunction();
-    }, 30000);
+      updateFlightAwareStatuses(displayFlightsRef.current);
+    }, 300000);
   };
 
   useEffect(() => {
