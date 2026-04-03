@@ -1087,7 +1087,7 @@ const durationString = (millisecondsIn: number) => {
   const days = Math.floor(milliseconds / (1000 * 60 * 60 * 24));
   const hours = Math.floor(milliseconds / (1000 * 60 * 60) - days * 24);
   const minutes = Math.floor(
-    milliseconds / (1000 * 60) - (days * 24 * 60 + hours * 60)
+    milliseconds / (1000 * 60) - (days * 24 * 60 + hours * 60),
   );
 
   if (days > 0) {
@@ -1112,7 +1112,7 @@ const Home: React.FC = () => {
 
   const presentToast = (
     message: string,
-    position: "top" | "middle" | "bottom"
+    position: "top" | "middle" | "bottom",
   ) => {
     present({
       message: message,
@@ -1150,7 +1150,7 @@ const Home: React.FC = () => {
     const newFlights = (await API.get(
       "tripItFlightsAdapter",
       "/tripit/flights/all",
-      {}
+      {},
     )) as Array<FlightStatus>;
     setFlights(newFlights);
     await updateFlightAwareStatuses(newFlights);
@@ -1164,7 +1164,7 @@ const Home: React.FC = () => {
     start: string,
     end: string,
     getMap: boolean,
-    getIncomingFlights: boolean
+    getIncomingFlights: boolean,
   ) => {
     let fa_flight_id = undefined;
     let inboundFaFlightId = undefined;
@@ -1179,7 +1179,7 @@ const Home: React.FC = () => {
         status: (await API.get(
           "flightAwareAdapter",
           `/flightaware/details/${ident}?start=${start}&end=${end}`,
-          {}
+          {},
         )) as FlightAwareStatus,
         fetchedDate: new Date(),
       };
@@ -1204,7 +1204,7 @@ const Home: React.FC = () => {
         ...((await API.get(
           "flightAwareAdapter",
           `/flightaware/map/${fa_flight_id}?width=${mapSize}&height=${mapSize}`,
-          {}
+          {},
         )) as { map: string }),
         fetchedDate: new Date(),
       };
@@ -1228,7 +1228,7 @@ const Home: React.FC = () => {
         const incomingFlightFlightAwareStatus = (await API.get(
           "flightAwareAdapter",
           `/flightaware/details/${inboundFaFlightId}`,
-          {}
+          {},
         )) as FlightAwareStatus;
 
         incomingFlights.push(incomingFlightFlightAwareStatus);
@@ -1253,7 +1253,12 @@ const Home: React.FC = () => {
 
   const updateFlightAwareStatuses = async (newFlights: Array<FlightStatus>) => {
     for (const flight of newFlights) {
-      const ident = `${flight.marketing_airline_code}${flight.marketing_flight_number}`;
+      let airlineCode = flight.marketing_airline_code;
+      if (airlineCode in IATAToICAO) {
+        airlineCode = IATAToICAO[airlineCode];
+      }
+
+      const ident = `${airlineCode}${flight.marketing_flight_number}`;
 
       const scheduledDepartureDateObject =
         flight.Status.ScheduledDepartureDateTime === undefined
@@ -1269,14 +1274,14 @@ const Home: React.FC = () => {
         scheduledDepartureDateObject.date +
           "T" +
           scheduledDepartureDateObject.time +
-          scheduledDepartureDateObject.utc_offset
+          scheduledDepartureDateObject.utc_offset,
       );
 
       const scheduledArrivalDate = new Date(
         scheduledArrivalDateObject.date +
           "T" +
           scheduledArrivalDateObject.time +
-          scheduledArrivalDateObject.utc_offset
+          scheduledArrivalDateObject.utc_offset,
       );
 
       const actualDepartureDateObject =
@@ -1290,7 +1295,7 @@ const Home: React.FC = () => {
               actualDepartureDateObject.date +
                 "T" +
                 actualDepartureDateObject.time +
-                actualDepartureDateObject.utc_offset
+                actualDepartureDateObject.utc_offset,
             );
 
       const actualArrivalDate =
@@ -1300,7 +1305,7 @@ const Home: React.FC = () => {
               actualArrivalDateObject.date +
                 "T" +
                 actualArrivalDateObject.time +
-                actualArrivalDateObject.utc_offset
+                actualArrivalDateObject.utc_offset,
             );
 
       const millisecondsUntilDeparture =
@@ -1319,7 +1324,7 @@ const Home: React.FC = () => {
           scheduledDepartureDate.toISOString(),
           scheduledArrivalDate.toISOString(),
           true,
-          false
+          false,
         );
       } else if (
         millisecondsUntilDeparture < 1000 * 60 * 60 * 24 &&
@@ -1330,7 +1335,7 @@ const Home: React.FC = () => {
           scheduledDepartureDate.toISOString(),
           scheduledArrivalDate.toISOString(),
           false,
-          true
+          true,
         );
       }
     }
@@ -1384,7 +1389,12 @@ const Home: React.FC = () => {
         )}
         <IonAccordionGroup ref={accordionGroup} multiple={true}>
           {flights.map((flight, index) => {
-            const ident = `${flight.marketing_airline_code}${flight.marketing_flight_number}`;
+            let airlineCode = flight.marketing_airline_code;
+            if (airlineCode in IATAToICAO) {
+              airlineCode = IATAToICAO[airlineCode];
+            }
+
+            const ident = `${airlineCode}${flight.marketing_flight_number}`;
 
             const scheduledDepartureDateObject =
               flight.Status.ScheduledDepartureDateTime === undefined
@@ -1400,14 +1410,14 @@ const Home: React.FC = () => {
               scheduledDepartureDateObject.date +
                 "T" +
                 scheduledDepartureDateObject.time +
-                scheduledDepartureDateObject.utc_offset
+                scheduledDepartureDateObject.utc_offset,
             );
 
             const scheduledArrivalDate = new Date(
               scheduledArrivalDateObject.date +
                 "T" +
                 scheduledArrivalDateObject.time +
-                scheduledArrivalDateObject.utc_offset
+                scheduledArrivalDateObject.utc_offset,
             );
 
             const scheduledDateDifference =
@@ -1417,7 +1427,7 @@ const Home: React.FC = () => {
                 : Math.abs(
                     (new Date(scheduledArrivalDateObject.date).getTime() -
                       new Date(scheduledDepartureDateObject.date).getTime()) /
-                      (1000 * 60 * 60 * 24)
+                      (1000 * 60 * 60 * 24),
                   );
 
             const actualDepartureDateObject =
@@ -1432,7 +1442,7 @@ const Home: React.FC = () => {
                     actualDepartureDateObject.date +
                       "T" +
                       actualDepartureDateObject.time +
-                      actualDepartureDateObject.utc_offset
+                      actualDepartureDateObject.utc_offset,
                   );
 
             const actualArrivalDate =
@@ -1442,7 +1452,7 @@ const Home: React.FC = () => {
                     actualArrivalDateObject.date +
                       "T" +
                       actualArrivalDateObject.time +
-                      actualArrivalDateObject.utc_offset
+                      actualArrivalDateObject.utc_offset,
                   );
 
             const actualDateDifference =
@@ -1452,7 +1462,7 @@ const Home: React.FC = () => {
                 : Math.abs(
                     (new Date(actualArrivalDateObject.date).getTime() -
                       new Date(actualDepartureDateObject.date).getTime()) /
-                      (1000 * 60 * 60 * 24)
+                      (1000 * 60 * 60 * 24),
                   );
 
             const departureDelay =
@@ -1479,7 +1489,7 @@ const Home: React.FC = () => {
                 : millisecondsUntilTime(actualArrivalDate);
 
             const departureCountdown = durationString(
-              millisecondsUntilDeparture
+              millisecondsUntilDeparture,
             );
 
             const arrivalCountdown = durationString(millisecondsUntilArrival);
@@ -1649,7 +1659,7 @@ const Home: React.FC = () => {
                                   ...longTimeFormatOptions,
                                   timeZone:
                                     scheduledDepartureDateObject.timezone,
-                                }
+                                },
                               )}
                             </p>
                             {actualDepartureDate && (
@@ -1672,7 +1682,7 @@ const Home: React.FC = () => {
                                         ...longTimeFormatOptions,
                                         timeZone:
                                           scheduledDepartureDateObject.timezone,
-                                      }
+                                      },
                                     )}
                                   </IonText>
                                 </p>
@@ -1717,7 +1727,7 @@ const Home: React.FC = () => {
                                 {
                                   ...longTimeFormatOptions,
                                   timeZone: scheduledArrivalDateObject.timezone,
-                                }
+                                },
                               )}
                               {scheduledDateDifference !== undefined &&
                                 scheduledDateDifference !== 0 && (
@@ -1725,7 +1735,7 @@ const Home: React.FC = () => {
                                     <small>
                                       {" "}
                                       {dateDifferenceFormatter.format(
-                                        scheduledDateDifference
+                                        scheduledDateDifference,
                                       )}
                                     </small>
                                   </IonText>
@@ -1751,7 +1761,7 @@ const Home: React.FC = () => {
                                         ...longTimeFormatOptions,
                                         timeZone:
                                           scheduledArrivalDateObject.timezone,
-                                      }
+                                      },
                                     )}
                                   </IonText>
                                   {actualDateDifference !== undefined &&
@@ -1760,7 +1770,7 @@ const Home: React.FC = () => {
                                         <small>
                                           {" "}
                                           {dateDifferenceFormatter.format(
-                                            actualDateDifference
+                                            actualDateDifference,
                                           )}
                                         </small>
                                       </IonText>
@@ -1801,7 +1811,7 @@ const Home: React.FC = () => {
                                           role="button"
                                           onClick={() => {
                                             navigator.clipboard.writeText(
-                                              incomingFlight.ident
+                                              incomingFlight.ident,
                                             );
                                           }}
                                         >
@@ -1820,7 +1830,7 @@ const Home: React.FC = () => {
                                         {new Date(
                                           incomingFlight.actual_out ??
                                             incomingFlight.estimated_out ??
-                                            incomingFlight.scheduled_out
+                                            incomingFlight.scheduled_out,
                                         ).toLocaleString("en-US", {
                                           ...longDateTimeFormatOptions,
                                           timeZone:
@@ -1830,7 +1840,7 @@ const Home: React.FC = () => {
                                         {new Date(
                                           incomingFlight.actual_in ??
                                             incomingFlight.estimated_in ??
-                                            incomingFlight.scheduled_in
+                                            incomingFlight.scheduled_in,
                                         ).toLocaleString("en-US", {
                                           ...longDateTimeFormatOptions,
                                           timeZone:
@@ -1843,7 +1853,7 @@ const Home: React.FC = () => {
                                             {"Delayed by "}
                                             {durationString(
                                               incomingFlight.arrival_delay *
-                                                1000
+                                                1000,
                                             )}
                                           </IonText>
                                         </p>
@@ -1852,7 +1862,7 @@ const Home: React.FC = () => {
                                     <IonBadge
                                       slot="end"
                                       color={colorForFaFlightStatus(
-                                        incomingFlight
+                                        incomingFlight,
                                       )}
                                     >
                                       {incomingFlight.status}
@@ -1882,26 +1892,26 @@ const Home: React.FC = () => {
                                         {
                                           ...(dateObjectsAreSameDay(
                                             actualDepartureDate,
-                                            new Date()
+                                            new Date(),
                                           )
                                             ? longTimeFormatOptions
                                             : longDateTimeFormatOptions),
                                           timeZone:
                                             scheduledDepartureDateObject.timezone,
-                                        }
+                                        },
                                       )
                                     : scheduledDepartureDate.toLocaleTimeString(
                                         "en-US",
                                         {
                                           ...(dateObjectsAreSameDay(
                                             scheduledDepartureDate,
-                                            new Date()
+                                            new Date(),
                                           )
                                             ? longTimeFormatOptions
                                             : longDateTimeFormatOptions),
                                           timeZone:
                                             scheduledDepartureDateObject.timezone,
-                                        }
+                                        },
                                       );
 
                                 const arrivalDateTimeString = actualArrivalDate
@@ -1910,26 +1920,26 @@ const Home: React.FC = () => {
                                       {
                                         ...(dateObjectsAreSameDay(
                                           actualArrivalDate,
-                                          new Date()
+                                          new Date(),
                                         )
                                           ? longTimeFormatOptions
                                           : longDateTimeFormatOptions),
                                         timeZone:
                                           scheduledArrivalDateObject.timezone,
-                                      }
+                                      },
                                     )
                                   : scheduledArrivalDate.toLocaleTimeString(
                                       "en-US",
                                       {
                                         ...(dateObjectsAreSameDay(
                                           scheduledArrivalDate,
-                                          new Date()
+                                          new Date(),
                                         )
                                           ? longTimeFormatOptions
                                           : longDateTimeFormatOptions),
                                         timeZone:
                                           scheduledArrivalDateObject.timezone,
-                                      }
+                                      },
                                     );
 
                                 const shareData = {
@@ -1968,7 +1978,7 @@ const Home: React.FC = () => {
                                   await navigator.share(shareData);
                                 } catch (err) {
                                   navigator.clipboard.writeText(
-                                    shareData.text + " \njdami.co/flights"
+                                    shareData.text + " \njdami.co/flights",
                                   );
                                   presentToast("Copied to clipboard", "top");
                                 }
@@ -2035,12 +2045,12 @@ const Home: React.FC = () => {
           })}
         </IonAccordionGroup>
         <ExploreContainer />
-        <div style={{ textAlign: 'center', padding: '20px' }}>
+        <div style={{ textAlign: "center", padding: "20px" }}>
           <a href="https://my.flightradar24.com/jonathandamico">
-            <img 
-              src="https://banners-my.flightradar24.com/jonathandamico.png" 
-              alt="My Flightdiary.net profile" 
-              style={{ maxWidth: '100%', height: 'auto' }}
+            <img
+              src="https://banners-my.flightradar24.com/jonathandamico.png"
+              alt="My Flightdiary.net profile"
+              style={{ maxWidth: "100%", height: "auto" }}
             />
           </a>
         </div>
