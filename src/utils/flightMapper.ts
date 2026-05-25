@@ -1173,6 +1173,34 @@ export const mapTripItToDisplayFlight = (
 };
 
 /**
+ * Get the local calendar date (YYYY-MM-DD) of an instant in a given timezone.
+ */
+const localDateString = (date: Date, timezone: string): string =>
+  new Intl.DateTimeFormat("en-CA", {
+    timeZone: timezone,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(date);
+
+/**
+ * Whole-day difference between two instants based on their *local* calendar
+ * dates at each end's timezone (not UTC). Parsing the date-only strings as
+ * UTC midnight avoids DST/offset skew.
+ */
+const localDayDifference = (
+  departure: DateTimeWithTimezone,
+  arrival: DateTimeWithTimezone,
+): number =>
+  Math.round(
+    (new Date(localDateString(arrival.dateTime, arrival.timezone)).getTime() -
+      new Date(
+        localDateString(departure.dateTime, departure.timezone),
+      ).getTime()) /
+      (1000 * 60 * 60 * 24),
+  );
+
+/**
  * Enrich a DisplayFlight with FlightAware data.
  * Only overwrites fields when FA provides non-null values.
  */
@@ -1221,20 +1249,17 @@ export const enrichWithFlightAware = (
     estimatedArrival.dateTime.getTime() !==
     scheduledArrival.dateTime.getTime();
 
-  // Compute date differences for +1 day labels
-  const scheduledDepDate = fa.scheduled_out.split("T")[0];
-  const scheduledArrDate = fa.scheduled_in.split("T")[0];
-  const scheduledDateDifference = Math.abs(
-    (new Date(scheduledArrDate).getTime() -
-      new Date(scheduledDepDate).getTime()) /
-      (1000 * 60 * 60 * 24),
+  // Compute date differences for +1 day labels using each end's *local*
+  // calendar date. Comparing the raw UTC date portions is wrong: a flight can
+  // cross midnight UTC while staying on the same local day at both airports.
+  const scheduledDateDifference = localDayDifference(
+    scheduledDeparture,
+    scheduledArrival,
   );
 
-  const estDepDate = estimatedOutStr.split("T")[0];
-  const estArrDate = estimatedInStr.split("T")[0];
-  const estimatedDateDifference = Math.abs(
-    (new Date(estArrDate).getTime() - new Date(estDepDate).getTime()) /
-      (1000 * 60 * 60 * 24),
+  const estimatedDateDifference = localDayDifference(
+    estimatedDeparture,
+    estimatedArrival,
   );
 
   return {
